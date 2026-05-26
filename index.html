@@ -1,0 +1,948 @@
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jason's Command Center</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #eef3fa;
+    --bg-tertiary: #dce8f5;
+    --text-primary: #0d1f3c;
+    --text-secondary: #3a5a8a;
+    --text-tertiary: #7a9bbf;
+    --border-light: rgba(30,80,160,0.1);
+    --border-mid: rgba(30,80,160,0.18);
+    --border-strong: rgba(30,80,160,0.32);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font-sans: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    --font-serif: Georgia, 'Times New Roman', serif;
+    --accent-green: #1a6bbf;
+    --accent-blue: #0d4a99;
+    --accent-pink: #5b8dd9;
+    --accent-amber: #2563b0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #0d1e36;
+      --bg-secondary: #152844;
+      --bg-tertiary: #1a3254;
+      --text-primary: #ddeeff;
+      --text-secondary: #7aabdd;
+      --text-tertiary: #4a7aaa;
+      --border-light: rgba(100,180,255,0.08);
+      --border-mid: rgba(100,180,255,0.15);
+      --border-strong: rgba(100,180,255,0.28);
+    }
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+  }
+
+  .page { max-width: 960px; margin: 0 auto; }
+
+  .dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 0.5px solid var(--border-mid);
+  }
+  .dash-brand { display: flex; align-items: center; gap: 10px; }
+  .dash-logo {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--accent-blue);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .dash-title { font-size: 20px; font-weight: 500; color: var(--text-primary); }
+  .dash-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 1px; }
+  .dash-date { font-size: 13px; color: var(--text-secondary); text-align: right; line-height: 1.5; }
+
+  .grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+
+  .card {
+    background: var(--bg-primary);
+    border: 0.5px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 1.25rem;
+  }
+
+  .card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 11px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-secondary);
+  }
+  .card-action {
+    font-size: 12px; color: var(--text-secondary);
+    cursor: pointer; background: none; border: none;
+    padding: 0; font-family: var(--font-sans);
+  }
+  .card-action:hover { color: var(--text-primary); }
+
+  /* Calendar */
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .cal-col { display: flex; flex-direction: column; min-height: 130px; }
+  .cal-col-header {
+    text-align: center; padding-bottom: 8px; margin-bottom: 6px;
+    border-bottom: 1px solid var(--border-mid);
+  }
+  .cal-col-dow { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
+  .cal-col-num { font-size: 20px; font-weight: 300; color: var(--text-primary); line-height: 1.2; margin-top: 2px; }
+  .cal-col.is-today .cal-col-dow { color: var(--accent-green); }
+  .cal-col.is-today .cal-col-num { color: var(--accent-green); font-weight: 500; }
+  .cal-col-events { display: flex; flex-direction: column; gap: 4px; }
+  .cal-event {
+    display: block; padding: 4px 6px; border-radius: var(--radius-md);
+    background: var(--bg-secondary); text-decoration: none;
+    transition: background 0.15s; border-left: 2px solid transparent;
+  }
+  .cal-event:hover { background: var(--bg-tertiary); }
+  .cal-event.ev-renee { border-left-color: var(--accent-pink); }
+  .cal-event.ev-today { border-left-color: var(--accent-green); }
+  .cal-event.ev-upcoming { border-left-color: var(--accent-blue); }
+  .cal-event.ev-allday { background: var(--bg-tertiary); border-left-color: var(--border-strong); }
+  .cal-title { font-size: 11px; color: var(--text-primary); line-height: 1.3; }
+  .cal-time { font-size: 10px; color: var(--text-secondary); margin-top: 1px; }
+  .cal-empty { font-size: 11px; color: var(--text-tertiary); font-style: italic; text-align: center; margin-top: 6px; }
+
+  /* Goals */
+  .goal-list { display: flex; flex-direction: column; gap: 9px; }
+  .goal-check {
+    width: 18px; height: 18px; border: 1.5px solid var(--border-mid);
+    border-radius: 4px; flex-shrink: 0; margin-top: 1px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg-primary); transition: all 0.15s;
+  }
+  .goal-check:hover { border-color: var(--accent-blue); }
+  .goal-check.done { background: var(--accent-blue); border-color: var(--accent-blue); }
+  .goal-check.done::after {
+    content: '';
+    display: block; width: 5px; height: 9px;
+    border: 2px solid white; border-top: none; border-left: none;
+    transform: rotate(45deg) translateY(-1px);
+  }
+  .goal-text { font-size: 14px; color: var(--text-primary); line-height: 1.5; flex: 1; }
+  .goal-text.done { color: var(--text-tertiary); text-decoration: line-through; }
+  .goal-del {
+    background: none; border: none; color: var(--text-tertiary);
+    cursor: pointer; font-size: 16px; line-height: 1; padding: 0 2px;
+    opacity: 0; transition: opacity 0.15s;
+  }
+  .goal-item:hover .goal-del { opacity: 1; }
+  .goal-del:hover { color: #A32D2D; }
+  .add-goal-row { display: flex; gap: 7px; margin-top: 10px; }
+  .add-goal-input {
+    flex: 1; padding: 7px 10px; font-size: 13px;
+    border: 0.5px solid var(--border-mid); border-radius: var(--radius-md);
+    background: var(--bg-primary); color: var(--text-primary);
+    font-family: var(--font-sans);
+  }
+  .add-goal-input:focus { outline: none; border-color: var(--border-strong); }
+
+  /* Buttons / Inputs */
+  .btn {
+    padding: 7px 13px; font-size: 13px;
+    border: 0.5px solid var(--border-mid); border-radius: var(--radius-md);
+    background: var(--bg-primary); color: var(--text-primary);
+    cursor: pointer; font-family: var(--font-sans);
+    transition: background 0.15s;
+  }
+  .btn:hover { background: var(--bg-secondary); }
+  .msg-input {
+    flex: 1; padding: 7px 10px; font-size: 13px;
+    border: 0.5px solid var(--border-mid); border-radius: var(--radius-md);
+    background: var(--bg-primary); color: var(--text-primary);
+    font-family: var(--font-sans);
+  }
+  .msg-input:focus { outline: none; border-color: var(--border-strong); }
+  .prio-select {
+    font-size: 12px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-md);
+    background: var(--bg-primary); color: var(--text-secondary);
+    padding: 0 6px; cursor: pointer; font-family: var(--font-sans);
+  }
+
+  .empty-state { font-size: 13px; color: var(--text-secondary); padding: 6px 0; }
+
+  /* PPP Wheel Card */
+  #ppp-card { overflow: hidden; }
+  #ppp-wheel-wrap { width: 100%; }
+  #ppp-wheel-wrap canvas { width: 100%; display: block; cursor: pointer; }
+  #ppp-detail-wrap {
+    display: none;
+    padding: 1.2rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    margin-top: 4px;
+  }
+  #ppp-back {
+    margin-bottom: 1rem; padding: 6px 14px; border: none; border-radius: 5px;
+    cursor: pointer; font-size: 13px; color: #fff; font-family: var(--font-sans);
+  }
+  #ppp-dtitle { font-size: 17px; font-weight: bold; margin-bottom: 1rem; padding-bottom: 8px; border-bottom: 1px solid var(--border-mid); }
+  .ppp-sub { margin-bottom: 1rem; }
+  .ppp-subname { font-size: 13px; font-weight: bold; color: var(--text-primary); margin-bottom: 4px; }
+  .ppp-subitems { padding-left: 16px; list-style: disc; }
+  .ppp-subitems li { font-size: 12px; color: var(--text-secondary); line-height: 1.75; }
+  .ppp-subitems-nested { padding-left: 14px; list-style: circle; margin-top: 2px; }
+  .ppp-noitem { font-size: 12px; color: var(--text-tertiary); font-style: italic; }
+  .ppp-notes-wrap { margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--border-mid); }
+  .ppp-notes-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-secondary); margin-bottom: 6px; }
+  .ppp-notes-wrap textarea {
+    width: 100%; height: 72px; padding: 8px 10px; font-size: 13px;
+    font-family: var(--font-sans); border: 0.5px solid var(--border-mid);
+    border-radius: var(--radius-md); background: var(--bg-primary);
+    color: var(--text-primary); resize: vertical;
+  }
+  .ppp-notes-wrap textarea:focus { outline: none; border-color: var(--border-strong); }
+  .ppp-completion-wrap { margin-top: 1rem; display: flex; align-items: center; gap: 10px; }
+  .ppp-completion-wrap label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); white-space: nowrap; }
+  .ppp-completion-wrap input[type=range] { flex: 1; }
+  .ppp-completion-wrap span { font-size: 12px; color: var(--text-secondary); min-width: 32px; }
+  .ppp-toolbar { display: flex; gap: 7px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+  .ppp-toolbar button, .ppp-toolbar label {
+    padding: 5px 11px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-md);
+    cursor: pointer; font-size: 12px; font-family: var(--font-sans);
+    background: var(--bg-secondary); color: var(--text-secondary);
+  }
+  .ppp-toolbar button:hover, .ppp-toolbar label:hover { background: var(--bg-tertiary); }
+  .ppp-toolbar input[type=file] { display: none; }
+  #ppp-toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: #0d1f3c; color: #fff; padding: 8px 20px; border-radius: 20px;
+    font-size: 13px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 9999;
+  }
+
+  /* Team Overview */
+  #to-body { display: none; margin-top: 14px; }
+  .to-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 11px; }
+  .to-pc { background: var(--bg-secondary); border: 0.5px solid var(--border-light); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: border-color .15s; }
+  .to-pc:hover { border-color: var(--border-strong); }
+  .to-pch { display: flex; align-items: center; gap: 10px; padding: 0.8rem 1rem; border-bottom: 0.5px solid var(--border-light); }
+  .to-av { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+  .to-pcb { padding: 0.8rem 1rem; display: flex; flex-direction: column; gap: 7px; }
+  .to-sec { font-size: 10px; }
+  .to-sec-lbl { font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--text-tertiary); margin-bottom: 3px; }
+  .to-pip { display: inline-block; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .to-chip { font-size: 10px; padding: 1px 6px; border-radius: var(--radius-md); background: var(--bg-primary); border: 0.5px solid var(--border-light); display: inline-flex; align-items: center; gap: 3px; }
+  .to-bdg { display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: var(--radius-md); font-weight: 500; }
+  .to-pos { background: #E6F1FB; color: #0C447C; } .to-neg { background: #FCEBEB; color: #A32D2D; } .to-neu { background: var(--bg-tertiary); color: var(--text-secondary); }
+  .to-pro { background: #E6F1FB; color: #0C447C; } .to-per { background: var(--bg-tertiary); color: var(--accent-blue); }
+  .to-dim { color: var(--text-tertiary); font-style: italic; }
+  /* detail */
+  .to-dv { display: none; }
+  .to-dv.on { display: block; }
+  .to-dh { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 0.5px solid var(--border-light); }
+  .to-dav { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+  .to-dg { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+  @media (max-width: 680px) { .to-dg { grid-template-columns: 1fr; } }
+  .to-dsc { background: var(--bg-secondary); border: 0.5px solid var(--border-light); border-radius: var(--radius-lg); padding: 0.8rem 1rem; }
+  .to-dsc.fw { grid-column: 1/-1; }
+  .to-dsh { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
+  .to-dst { font-size: 12px; font-weight: 500; }
+  .to-add { background: none; border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); padding: 2px 8px; font-size: 11px; font-family: var(--font-sans); color: var(--text-secondary); cursor: pointer; }
+  .to-add:hover { background: var(--bg-primary); }
+  .to-row { display: flex; align-items: center; gap: 7px; padding: 4px 0; border-bottom: 0.5px solid var(--border-light); font-size: 12px; }
+  .to-row:last-child { border-bottom: none; }
+  .to-row.top { align-items: flex-start; }
+  .to-chk { width: 13px; height: 13px; border-radius: 3px; border: 1.5px solid var(--border-mid); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 8px; }
+  .to-chk.done { background: var(--accent-green); border-color: var(--accent-green); color: #fff; }
+  .to-pp { font-size: 10px; padding: 1px 5px; border-radius: var(--radius-md); font-weight: 500; flex-shrink: 0; }
+  .to-pp.high { background: #FCEBEB; color: #A32D2D; } .to-pp.med { background: #FAEEDA; color: #854F0B; } .to-pp.low { background: var(--bg-tertiary); color: var(--text-secondary); }
+  .to-del { background: none; border: none; cursor: pointer; color: var(--text-tertiary); font-size: 12px; padding: 0 2px; opacity: .35; }
+  .to-del:hover { opacity: 1; color: #A32D2D; }
+  .to-mg { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap: 6px; }
+  .to-msm { background: var(--bg-primary); border-radius: var(--radius-md); padding: 7px 9px; position: relative; cursor: pointer; }
+  .to-mdt { width: 7px; height: 7px; border-radius: 50%; position: absolute; top: 7px; right: 7px; }
+  .to-empty { font-size: 11px; color: var(--text-tertiary); padding: 6px 0; text-align: center; }
+  .to-sf { font-size: 11px; color: var(--accent-green); opacity: 0; transition: opacity .4s; margin-right: 4px; }
+  .to-sf.show { opacity: 1; }
+  /* Team modal */
+  .to-mo { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 300; align-items: center; justify-content: center; padding: 1rem; }
+  .to-mo.open { display: flex; }
+  .to-mb { background: var(--bg-primary); border: 0.5px solid var(--border-mid); border-radius: var(--radius-lg); padding: 1.5rem; width: 390px; max-width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,.18); max-height: 90vh; overflow-y: auto; }
+  .to-mti { font-size: 15px; font-weight: 500; margin-bottom: 1rem; }
+  .to-f { margin-bottom: 10px; }
+  .to-f label { display: block; font-size: 11px; font-weight: 500; color: var(--text-secondary); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .4px; }
+  .to-f input, .to-f select, .to-f textarea { width: 100%; padding: 7px 9px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); background: var(--bg-secondary); color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; outline: none; }
+  .to-f input:focus, .to-f select:focus, .to-f textarea:focus { border-color: var(--border-strong); }
+  .to-f textarea { height: 65px; resize: vertical; }
+  .to-ma { display: flex; justify-content: flex-end; gap: 7px; margin-top: 1rem; }
+  .to-bc { padding: 6px 14px; border-radius: var(--radius-md); border: 0.5px solid var(--border-mid); background: transparent; color: var(--text-secondary); font-family: var(--font-sans); font-size: 12px; cursor: pointer; }
+  .to-bs { padding: 6px 14px; border-radius: var(--radius-md); border: none; background: var(--accent-blue); color: #fff; font-family: var(--font-sans); font-size: 12px; font-weight: 500; cursor: pointer; }
+
+</style>
+<script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script></head>
+<body>
+<div class="page">
+
+  <div class="dash-header">
+    <div class="dash-brand">
+      <div class="dash-logo">🍒</div>
+      <div>
+        <div class="dash-title">Jason's Command Center</div>
+        <div class="dash-subtitle">Cherry Republic</div>
+      </div>
+    </div>
+    <div class="dash-date" id="live-date">Tuesday, May 26, 2026<br><span style="color:var(--text-tertiary);font-size:11px">Cherry Republic</span></div>
+    <button class="btn" onclick="downloadHTML()" style="font-size:12px;padding:5px 11px;">⬇ Download HTML</button>
+  </div>
+
+  <div class="grid">
+
+    <!-- Calendar -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">📅 May 15 – 23</span>
+        <a class="card-action" href="https://outlook.office365.com/calendar" target="_blank">Open Outlook ↗</a>
+      </div>
+      <div class="cal-grid" id="cal-events" style="grid-template-columns:repeat(9,1fr);"><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Mon</div><div class="cal-col-num">18</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Sales L10</div><div class="cal-time">10am–11:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Lease Draft Discussion</div><div class="cal-time">10:15am–10:45am</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Tue</div><div class="cal-col-num">19</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Jason/Julie Coffee Hour</div><div class="cal-time">9am–10am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">LT Level 10</div><div class="cal-time">10:30am–12pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Projects Check In</div><div class="cal-time">1pm–1:30pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Pub Tree Check In</div><div class="cal-time">12pm–12:30pm</div></div><div class="cal-event ev-renee"><div class="cal-title">Hey Sunshine!</div><div class="cal-time">3pm–4pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Wed</div><div class="cal-col-num">20</div></div><div class="cal-col-events"><div class="cal-event ev-renee"><div class="cal-title">Renee Touch Base / Planner Check In</div><div class="cal-time">9:30am–10:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">International Workers Check In</div><div class="cal-time">1pm–2pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Blake &amp; Jason Happy Hour</div><div class="cal-time">3pm–5pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Thu</div><div class="cal-col-num">21</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Buffer Day</div><div class="cal-time">All day</div></div><div class="cal-event ev-upcoming"><div class="cal-title">TCT Board Meeting</div><div class="cal-time">9am–11am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Benefits Enrollment – In Person</div><div class="cal-time">1pm–2pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Fri</div><div class="cal-col-num">22</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Renee OOO</div><div class="cal-time">All day</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Sat</div><div class="cal-col-num">23</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Game 1 – Comstock Park</div><div class="cal-time">8am–8:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Game 2 – Comstock Park</div><div class="cal-time">1pm–1:30pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Sun</div><div class="cal-col-num">24</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Game 3 – Comstock Park</div><div class="cal-time">1pm–1:30pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Mon</div><div class="cal-col-num">25</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Memorial Day</div><div class="cal-time">All day</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Tue</div><div class="cal-col-num">26</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">LT Level 10</div><div class="cal-time">10:30am–12pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Projects Check In</div><div class="cal-time">1pm–1:30pm</div></div><div class="cal-event ev-renee"><div class="cal-title">Hey Sunshine!</div><div class="cal-time">3pm–4pm</div></div></div></div></div>
+    </div>
+
+    <!-- Sales -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">📊 Rolling 3-week sales report</span>
+        <span class="card-action" style="cursor:default">Apr 26 – May 16, 2026</span>
+      </div>
+      <div style="padding:1rem 0.5rem;font-size:13px;color:var(--text-secondary);font-style:italic;">
+        Sales report glitched, re-running it and will include as soon as it's done.
+      </div>
+      <div style="display:none;overflow-x:auto;">
+        <table style="width:100%;font-size:13px;border-collapse:collapse;">
+          <thead>
+            <tr style="border-bottom:0.5px solid var(--border-mid);">
+              <th style="text-align:left;padding:6px 8px;font-weight:500;color:var(--text-secondary);font-size:11px;">Channel</th>
+              <th style="text-align:right;padding:6px 8px;font-weight:500;color:var(--text-secondary);font-size:11px;">Sales</th>
+              <th style="text-align:right;padding:6px 8px;font-weight:500;color:var(--text-secondary);font-size:11px;">Sales LY</th>
+              <th style="text-align:right;padding:6px 8px;font-weight:500;color:var(--text-secondary);font-size:11px;">Var LY</th>
+              <th style="text-align:right;padding:6px 8px;font-weight:500;color:var(--text-secondary);font-size:11px;">Sales OP</th>
+              <th style="text-align:right;padding:6px 8px;font-weight:500;color:var(--text-secondary);font-size:11px;">Var Plan</th>
+              <th style="text-align:right;padding:6px 8px;font-weight:500;color:var(--text-secondary);font-size:11px;">Email Collect.</th>
+            </tr>
+          </thead>
+          <tbody id="sales-table-body"><tr style="display:none"><td style="padding:5px 8px;color:var(--text-primary)">Ann Arbor Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$166,626</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$148,718</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+12.0%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$157,199</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+6.0%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">1,064</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Charlevoix Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$32,326</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$31,956</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+1.2%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$34,186</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-5.4%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">211</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Frankenmuth Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$95,762</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$90,900</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+5.3%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$96,413</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-0.7%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">668</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Glen Arbor Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$90,032</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$86,918</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+3.6%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$91,901</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-2.0%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">767</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Holland Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$289,828</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$268,525</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+7.9%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$281,952</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+2.8%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">2,557</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Lansing Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$39,215</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$0</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$56,474</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-30.6%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">575</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Mackinaw City Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$29,685</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$5,097</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+482.4%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$10,057</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+195.2%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">260</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Traverse City Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$272,277</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$237,808</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+14.5%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$250,238</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+8.8%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">1,908</td></tr><tr style="background:var(--bg-secondary);border-top:0.5px solid var(--border-mid);border-bottom:0.5px solid var(--border-mid);font-weight:500;"><td style="padding:5px 8px;color:var(--text-primary)">All Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$1,015,752</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$869,923</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+16.8%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$978,421</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+3.8%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">8,010</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Web Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$184,467</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$147,801</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+24.8%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$167,146</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+10.4%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Mail Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$8,947</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$8,103</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+10.4%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$5,672</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+57.7%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Corporate Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$8,753</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$23,113</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-62.1%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$27,538</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-68.2%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Amazon Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$8,137</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$0</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$17,070</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-52.3%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="background:var(--bg-secondary);border-top:0.5px solid var(--border-mid);border-bottom:0.5px solid var(--border-mid);font-weight:500;"><td style="padding:5px 8px;color:var(--text-primary)">WB/MO/CP Total</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$210,305</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$179,016</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+17.5%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$217,426</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-3.3%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Wholesale Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$167,673</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$142,946</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+17.3%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$151,865</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+10.4%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Public House</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$28,274</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$40,939</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-30.9%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$42,647</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-33.7%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="background:var(--bg-secondary);border-top:0.5px solid var(--border-mid);border-bottom:0.5px solid var(--border-mid);font-weight:500;"><td style="padding:5px 8px;color:var(--text-primary)">Total</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$1,422,003</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$1,232,825</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+15.3%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$1,390,359</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+2.3%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Issues -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">💡 Check In / Issues / Opportunities</span>
+        <button class="card-action" onclick="addIssue()">+ Add</button>
+      </div>
+      <div id="issues-list" style="display:flex;flex-direction:column;gap:8px;min-height:40px;"><div class="empty-state">No issues or opportunities yet.</div></div>
+      <div style="display:flex;gap:7px;margin-top:10px;">
+        <input id="issue-input" class="msg-input" placeholder="Describe an issue or opportunity..." onkeydown="if(event.key==='Enter') addIssue()" style="flex:1;">
+        <select id="issue-type" class="prio-select" style="min-width:110px;">
+          <option value="issue">🔴 Issue</option>
+          <option value="opportunity">🟢 Opportunity</option>
+          <option value="checkin">🔵 Check In Item</option>
+          <option value="smiley">😊 Smiley Face</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TEAM SNAPSHOT                                                 -->
+    <!-- ============================================================ -->
+    <div class="card" id="to-card">
+      <div class="card-header" style="margin-bottom:0.75rem;">
+        <span class="card-title">👥 Team Snapshot</span>
+        <span id="to-save-indicator" style="font-size:11px;color:var(--text-tertiary);transition:opacity 0.4s;">✓ Saved</span>
+      </div>
+      <textarea id="to-notes"
+        placeholder="Notes…"
+        style="width:100%;min-height:140px;font-size:13px;font-family:var(--font-sans);color:var(--text-primary);background:var(--bg-secondary);border:0.5px solid var(--border-mid);border-radius:var(--radius-md);padding:10px 12px;resize:vertical;outline:none;line-height:1.6;"></textarea>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- PILOT PROVEN PROCESS WHEEL                                    -->
+    <!-- ============================================================ -->
+    <div class="card" id="ppp-card">
+      <div class="card-header">
+        <span class="card-title">🏗️ Pilot Proven Process — Birmingham</span>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button class="btn ppp-export-btn" onclick="pppExport()" style="font-size:11px;padding:4px 10px;">⬇ Export</button>
+          <label class="btn" style="font-size:11px;padding:4px 10px;cursor:pointer;">⬆ Import<input type="file" id="ppp-import-file" accept=".json" style="display:none;" onchange="pppImport(event)"></label>
+        </div>
+      </div>
+      <!-- Wheel -->
+      <div id="ppp-wheel-wrap" style="display: block;">
+        <canvas id="ppp-c" width="700" height="700"></canvas>
+      </div>
+      <!-- Detail panel -->
+      <div id="ppp-detail-wrap" style="display: none; border-left: 4px solid rgb(58, 79, 92);">
+        <button id="ppp-back" style="background: rgb(58, 79, 92); color: rgb(255, 255, 255);">← Back to wheel</button>
+        <div id="ppp-dtitle" style="color: rgb(58, 79, 92);">Evaluation</div>
+        <div id="ppp-dcontent"><div class="ppp-sub"><div class="ppp-subname">KPI's</div><p class="ppp-noitem">No checklist items yet</p></div><div class="ppp-sub"><div class="ppp-subname">Reporting</div><ul class="ppp-subitems"><li>P&amp;Ls and Sales plans created before first year is complete</li></ul></div><div class="ppp-sub"><div class="ppp-subname">Feedback</div><ul class="ppp-subitems"><li>Successes and challenges from store manager are captured</li></ul></div></div>
+        <div class="ppp-notes-wrap">
+          <div class="ppp-notes-label">Notes</div>
+          <textarea id="ppp-notes-box" placeholder="Add notes…"></textarea>
+        </div>
+        <div class="ppp-completion-wrap">
+          <label>Completeness</label>
+          <input type="range" min="0" max="100" value="0" step="1" id="ppp-completion-slider">
+          <span id="ppp-completion-val">0%</span>
+        </div>
+      </div>
+    </div>
+    <div id="ppp-toast"></div>
+
+    <!-- Rocks -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">🎯 Q2 Rocks</span>
+        <span class="card-action" style="cursor:default">Apr – Jun 2026</span>
+      </div>
+      <div class="goal-list" id="goal-list"><div class="goal-item" style="display:flex;flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;align-items:flex-start;gap:10px;"><div class="goal-check " onclick="toggleGoal(1)"></div><div class="goal-text ">Birmingham on target for Q3 opening</div><button class="goal-del" onclick="deleteGoal(1)">×</button></div><ul style="margin:5px 0 2px 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;"><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Construction has commenced</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Budget is prepared and agreed upon for buildout</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Store proven process guide is being utilized</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Roles and accountability adjustments are agreed upon</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Fulfillment group has understanding of projections by end of Q3 for sales for second half of the year</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Proven Process Applied</span></li></ul></div><div class="goal-item" style="display:flex;flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;align-items:flex-start;gap:10px;"><div class="goal-check " onclick="toggleGoal(2)"></div><div class="goal-text ">Sales shit on target to be ready for summer</div><button class="goal-del" onclick="deleteGoal(2)">×</button></div><ul style="margin:5px 0 2px 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;"><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Inventory practices are adjusted and SOPs complete</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>FMU refurnished</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>TC cafe updated</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Pub service and customer flow is complete</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Remerchandising by store is done</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>New product plan is communicated and in place for stores</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Training program updates have been implemented</span></li></ul></div><div class="goal-item" style="display:flex;flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;align-items:flex-start;gap:10px;"><div class="goal-check " onclick="toggleGoal(3)"></div><div class="goal-text ">Lansing performance review is in process</div><button class="goal-del" onclick="deleteGoal(3)">×</button></div><ul style="margin:5px 0 2px 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;"><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>4-5 metrics that help us determine whether the store is successful</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Next steps for measuring are established</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Timeline established for determination</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Routing for proposals established (staying closed, open, other location, etc.)</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Established end date to the process</s></span></li></ul></div><div class="goal-item" style="display:flex;flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;align-items:flex-start;gap:10px;"><div class="goal-check " onclick="toggleGoal(4)"></div><div class="goal-text ">Accountability adjustments for the team</div><button class="goal-del" onclick="deleteGoal(4)">×</button></div><ul style="margin:5px 0 2px 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;"><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Specific plan with times, dates, and roles defined and shared</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Dawn's role redefined</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Ellen's role redefined</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Northern stores management plan defined</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Management team for Birmingham is laid out</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Sales data analyst deliverables are clear for summer season</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Renee's attitude is sunshine and fresh air all quarter</s></span></li></ul></div><div class="goal-item" style="display:flex;flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;align-items:flex-start;gap:10px;"><div class="goal-check " onclick="toggleGoal(5)"></div><div class="goal-text ">Remerchandising to improve profitability from summer sales</div><button class="goal-del" onclick="deleteGoal(5)">×</button></div><ul style="margin:5px 0 2px 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;"><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Product categories are remerchandised</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Activities done before Memorial Day</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Product changes are monitored and data is prepared to be collected over the course of the summer</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Projected data analysis supplied to DFC</span></li></ul></div><div class="goal-item" style="display:flex;flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;align-items:flex-start;gap:10px;"><div class="goal-check " onclick="toggleGoal(6)"></div><div class="goal-text ">2nd Pilot store momentum is rolling</div><button class="goal-del" onclick="deleteGoal(6)">×</button></div><ul style="margin:5px 0 2px 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;"><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>2-3 locations identified</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Grand Rapids market looked at</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Partridge Creek popup is analyzed</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>DC market has in-person visit</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Lansing store evaluated</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Initial cities in Florida identified as potential spots</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Pilot kit is solidified and ready to be built</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Proven Process Applied</span></li></ul></div></div>
+      <div class="add-goal-row">
+        <input class="add-goal-input" id="goal-input" placeholder="Add a rock..." onkeydown="if(event.key==='Enter') addGoal()">
+        <button class="btn" onclick="addGoal()">+ Add</button>
+      </div>
+    </div>
+
+    <!-- Recharge Corner -->
+    <div class="card" id="spark-card" style="padding:0;overflow:hidden;position:relative;">
+      <!-- Header -->
+      <div style="background:#8b1a4a;padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:10px;">
+        <span style="font-size:18px;">🔋</span>
+        <span style="font-size:18px;font-weight:600;color:#fff;">Recharge</span>
+      </div>
+      <div id="spark-img-wrap" style="width:100%;height:220px;overflow:hidden;position:relative;background:#2c1f14;">
+        <img id="spark-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMjIwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIyMCI+CiAgPCEtLSBCYWNrZ3JvdW5kIHdhcm0gd2FsbCAtLT4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIyMCIgZmlsbD0iIzJjMWYxNCIvPgogIAogIDwhLS0gV2luZG93IHdpdGggbGlnaHQgLS0+CiAgPHJlY3QgeD0iMjQwIiB5PSIxNSIgd2lkdGg9IjEzMCIgaGVpZ2h0PSIxNjAiIHJ4PSI0IiBmaWxsPSIjMWExMDA4Ii8+CiAgPCEtLSBXaW5kb3cgZnJhbWUgLS0+CiAgPHJlY3QgeD0iMjQwIiB5PSIxNSIgd2lkdGg9IjEzMCIgaGVpZ2h0PSIxNjAiIHJ4PSI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM2YjRjMmEiIHN0cm9rZS13aWR0aD0iNiIvPgogIDwhLS0gV2luZG93IHBhbmVzIC0tPgogIDxsaW5lIHgxPSIzMDUiIHkxPSIxNSIgeDI9IjMwNSIgeTI9IjE3NSIgc3Ryb2tlPSIjNmI0YzJhIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMjQwIiB5MT0iOTUiIHgyPSIzNzAiIHkyPSI5NSIgc3Ryb2tlPSIjNmI0YzJhIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIFdhcm0gbGlnaHQgdGhyb3VnaCB3aW5kb3cgLSB1cHBlciBsZWZ0IHBhbmUgLS0+CiAgPHJlY3QgeD0iMjQzIiB5PSIxOCIgd2lkdGg9IjU5IiBoZWlnaHQ9Ijc0IiBmaWxsPSIjYzg4OTRhIiBvcGFjaXR5PSIwLjI1Ii8+CiAgPCEtLSBUcmVlIHNpbGhvdWV0dGUgb3V0c2lkZSAtLT4KICA8ZWxsaXBzZSBjeD0iMjg1IiBjeT0iNTAiIHJ4PSIyMiIgcnk9IjE4IiBmaWxsPSIjMGYxYTBhIiBvcGFjaXR5PSIwLjciLz4KICA8cmVjdCB4PSIyODEiIHk9IjYwIiB3aWR0aD0iNyIgaGVpZ2h0PSIzMCIgZmlsbD0iIzBmMWEwYSIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBTa3kgbG93ZXIgcGFuZXMgLS0+CiAgPHJlY3QgeD0iMjQzIiB5PSI5OCIgd2lkdGg9IjU5IiBoZWlnaHQ9Ijc0IiBmaWxsPSIjN2E5ZGJmIiBvcGFjaXR5PSIwLjE1Ii8+CiAgPHJlY3QgeD0iMzA4IiB5PSI5OCIgd2lkdGg9IjU5IiBoZWlnaHQ9Ijc0IiBmaWxsPSIjN2E5ZGJmIiBvcGFjaXR5PSIwLjE1Ii8+CiAgPHJlY3QgeD0iMzA4IiB5PSIxOCIgd2lkdGg9IjU5IiBoZWlnaHQ9Ijc0IiBmaWxsPSIjYzg4OTRhIiBvcGFjaXR5PSIwLjE4Ii8+CgogIDwhLS0gV2luZG93IGxpZ2h0IGdsb3cgb24gZmxvb3Ivd2FsbCAtLT4KICA8ZWxsaXBzZSBjeD0iMzEwIiBjeT0iMTg1IiByeD0iODAiIHJ5PSIyMCIgZmlsbD0iI2M4ODk0YSIgb3BhY2l0eT0iMC4wOCIvPgogIAogIDwhLS0gRmxvb3IgLS0+CiAgPHJlY3QgeD0iMCIgeT0iMTc1IiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQ1IiBmaWxsPSIjMWUxMjA4Ii8+CiAgPCEtLSBGbG9vciB0ZXh0dXJlIGxpbmVzIC0tPgogIDxsaW5lIHgxPSIwIiB5MT0iMTgyIiB4Mj0iNDAwIiB5Mj0iMTgyIiBzdHJva2U9IiMyYTFhMGMiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC42Ii8+CiAgPGxpbmUgeDE9IjAiIHkxPSIxOTIiIHgyPSI0MDAiIHkyPSIxOTIiIHN0cm9rZT0iIzJhMWEwYyIgc3Ryb2tlLXdpZHRoPSIxIiBvcGFjaXR5PSIwLjQiLz4KICAKICA8IS0tIFNtYWxsIHJ1ZyB1bmRlciBjaGFpciAtLT4KICA8ZWxsaXBzZSBjeD0iMTMwIiBjeT0iMTg1IiByeD0iODUiIHJ5PSIxNCIgZmlsbD0iIzVjMzMyMCIgb3BhY2l0eT0iMC43Ii8+CiAgPGVsbGlwc2UgY3g9IjEzMCIgY3k9IjE4NSIgcng9IjcwIiByeT0iMTEiIGZpbGw9IiM3YTQ0MzAiIG9wYWNpdHk9IjAuNSIvPgoKICA8IS0tIEFybWNoYWlyIGJvZHkgLS0+CiAgPHJlY3QgeD0iNTAiIHk9IjExNSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI3NSIgcng9IjgiIGZpbGw9IiM4YjQ1MTMiLz4KICA8IS0tIENoYWlyIHNlYXQgY3VzaGlvbiAtLT4KICA8cmVjdCB4PSI1NSIgeT0iMTM4IiB3aWR0aD0iMTUwIiBoZWlnaHQ9IjUwIiByeD0iNiIgZmlsbD0iI2EwNTIyZCIvPgogIDwhLS0gQ2hhaXIgYmFjayBjdXNoaW9uIC0tPgogIDxyZWN0IHg9IjU1IiB5PSIxMTAiIHdpZHRoPSIxNTAiIGhlaWdodD0iNTAiIHJ4PSI2IiBmaWxsPSIjYTA1MjJkIi8+CiAgPCEtLSBDaGFpciBhcm1zIC0tPgogIDxyZWN0IHg9IjQyIiB5PSIxMjAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI1NSIgcng9IjYiIGZpbGw9IiM3YTNiMTAiLz4KICA8cmVjdCB4PSIxOTYiIHk9IjEyMCIgd2lkdGg9IjIyIiBoZWlnaHQ9IjU1IiByeD0iNiIgZmlsbD0iIzdhM2IxMCIvPgogIDwhLS0gQXJtIHRvcHMgLS0+CiAgPHJlY3QgeD0iNDAiIHk9IjExNSIgd2lkdGg9IjI2IiBoZWlnaHQ9IjEwIiByeD0iNCIgZmlsbD0iIzhiNDUxMyIvPgogIDxyZWN0IHg9IjE5NCIgeT0iMTE1IiB3aWR0aD0iMjYiIGhlaWdodD0iMTAiIHJ4PSI0IiBmaWxsPSIjOGI0NTEzIi8+CiAgPCEtLSBDaGFpciBsZWdzIC0tPgogIDxyZWN0IHg9IjYyIiB5PSIxODUiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxOCIgcng9IjMiIGZpbGw9IiM1YzJlMGEiLz4KICA8cmVjdCB4PSIxODUiIHk9IjE4NSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjE4IiByeD0iMyIgZmlsbD0iIzVjMmUwYSIvPgoKICA8IS0tIFBlcnNvbiByZWFkaW5nIC0gc2ltcGxpZmllZCBzaWxob3VldHRlIC0tPgogIDwhLS0gQm9keSAtLT4KICA8ZWxsaXBzZSBjeD0iMTMwIiBjeT0iMTQ4IiByeD0iMzIiIHJ5PSIyMiIgZmlsbD0iIzNkMjUxMCIgb3BhY2l0eT0iMC44NSIvPgogIDwhLS0gSGVhZCAtLT4KICA8Y2lyY2xlIGN4PSIxMzAiIGN5PSIxMjIiIHI9IjE0IiBmaWxsPSIjYzg5NTZhIi8+CiAgPCEtLSBIYWlyIC0tPgogIDxlbGxpcHNlIGN4PSIxMzAiIGN5PSIxMTUiIHJ4PSIxNCIgcnk9IjgiIGZpbGw9IiMyYTFhMGEiLz4KICA8IS0tIEJvb2sgaW4gaGFuZHMgLS0+CiAgPHJlY3QgeD0iMTA4IiB5PSIxNDAiIHdpZHRoPSI0NCIgaGVpZ2h0PSIyOCIgcng9IjIiIGZpbGw9IiNlOGRjYzgiLz4KICA8bGluZSB4MT0iMTMwIiB5MT0iMTQwIiB4Mj0iMTMwIiB5Mj0iMTY4IiBzdHJva2U9IiNjNGI0OWEiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPCEtLSBCb29rIHBhZ2VzIHRleHR1cmUgLS0+CiAgPGxpbmUgeDE9IjExMiIgeTE9IjE0OCIgeDI9IjEyOCIgeTI9IjE0OCIgc3Ryb2tlPSIjYzRiNDlhIiBzdHJva2Utd2lkdGg9IjAuOCIgb3BhY2l0eT0iMC43Ii8+CiAgPGxpbmUgeDE9IjExMiIgeTE9IjE1MyIgeDI9IjEyOCIgeTI9IjE1MyIgc3Ryb2tlPSIjYzRiNDlhIiBzdHJva2Utd2lkdGg9IjAuOCIgb3BhY2l0eT0iMC43Ii8+CiAgPGxpbmUgeDE9IjExMiIgeTE9IjE1OCIgeDI9IjEyOCIgeTI9IjE1OCIgc3Ryb2tlPSIjYzRiNDlhIiBzdHJva2Utd2lkdGg9IjAuOCIgb3BhY2l0eT0iMC43Ii8+CiAgPGxpbmUgeDE9IjEzMiIgeTE9IjE0OCIgeDI9IjE0OCIgeTI9IjE0OCIgc3Ryb2tlPSIjYzRiNDlhIiBzdHJva2Utd2lkdGg9IjAuOCIgb3BhY2l0eT0iMC43Ii8+CiAgPGxpbmUgeDE9IjEzMiIgeTE9IjE1MyIgeDI9IjE0OCIgeTI9IjE1MyIgc3Ryb2tlPSIjYzRiNDlhIiBzdHJva2Utd2lkdGg9IjAuOCIgb3BhY2l0eT0iMC43Ii8+CiAgPGxpbmUgeDE9IjEzMiIgeTE9IjE1OCIgeDI9IjE0OCIgeTI9IjE1OCIgc3Ryb2tlPSIjYzRiNDlhIiBzdHJva2Utd2lkdGg9IjAuOCIgb3BhY2l0eT0iMC43Ii8+CgogIDwhLS0gU2lkZSB0YWJsZSAtLT4KICA8cmVjdCB4PSIyMDAiIHk9IjE1NSIgd2lkdGg9IjQ1IiBoZWlnaHQ9IjgiIHJ4PSIzIiBmaWxsPSIjNGEyZTE0Ii8+CiAgPHJlY3QgeD0iMjA4IiB5PSIxNjMiIHdpZHRoPSI2IiBoZWlnaHQ9IjIyIiByeD0iMiIgZmlsbD0iIzNkMjUxMCIvPgogIDxyZWN0IHg9IjIzMSIgeT0iMTYzIiB3aWR0aD0iNiIgaGVpZ2h0PSIyMiIgcng9IjIiIGZpbGw9IiMzZDI1MTAiLz4KICAKICA8IS0tIENvZmZlZSBtdWcgb24gdGFibGUgLS0+CiAgPHJlY3QgeD0iMjEyIiB5PSIxNDAiIHdpZHRoPSIyMiIgaGVpZ2h0PSIxOCIgcng9IjMiIGZpbGw9IiNlOGRjYzgiLz4KICA8cGF0aCBkPSJNMjM0IDE0NiBRMjQyIDE0NiAyNDIgMTUyIFEyNDIgMTU4IDIzNCAxNTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2U4ZGNjOCIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPCEtLSBTdGVhbSB3aXNwcyAtLT4KICA8cGF0aCBkPSJNMjE4IDEzNiBRMjE2IDEzMiAyMTggMTI4IiBmaWxsPSJub25lIiBzdHJva2U9IiNjOGMwYjAiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz4KICA8cGF0aCBkPSJNMjIzIDEzNSBRMjIxIDEzMCAyMjMgMTI1IiBmaWxsPSJub25lIiBzdHJva2U9IiNjOGMwYjAiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjUiLz4KICA8cGF0aCBkPSJNMjI4IDEzNiBRMjI2IDEzMiAyMjggMTI4IiBmaWxsPSJub25lIiBzdHJva2U9IiNjOGMwYjAiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz4KCiAgPCEtLSBTbWFsbCBmbG9vciBsYW1wIC0tPgogIDxyZWN0IHg9IjI1IiB5PSI5MCIgd2lkdGg9IjUiIGhlaWdodD0iOTAiIHJ4PSIyIiBmaWxsPSIjM2QyNTEwIi8+CiAgPCEtLSBMYW1wIHNoYWRlIC0tPgogIDxwYXRoIGQ9Ik01IDkwIEw0NSA5MCBMMzggNjUgTDEyIDY1IFoiIGZpbGw9IiNkNGE4NTMiIG9wYWNpdHk9IjAuOSIvPgogIDwhLS0gTGFtcCBnbG93IC0tPgogIDxlbGxpcHNlIGN4PSIyNyIgY3k9IjkwIiByeD0iMzUiIHJ5PSIyNSIgZmlsbD0iI2Y1Yzg0MiIgb3BhY2l0eT0iMC4wOCIvPgogIAogIDwhLS0gQm9va3NoZWxmIGdsaW1wc2Ugb24gbGVmdCB3YWxsIC0tPgogIDxyZWN0IHg9IjAiIHk9IjMwIiB3aWR0aD0iMTgiIGhlaWdodD0iMTQ1IiBmaWxsPSIjMmExODA4Ii8+CiAgPHJlY3QgeD0iMCIgeT0iMzUiIHdpZHRoPSIxNiIgaGVpZ2h0PSIyMCIgcng9IjEiIGZpbGw9IiM4YjFhMWEiLz4KICA8cmVjdCB4PSIwIiB5PSI1NyIgd2lkdGg9IjE2IiBoZWlnaHQ9IjI1IiByeD0iMSIgZmlsbD0iIzFhNGE4YiIvPgogIDxyZWN0IHg9IjAiIHk9Ijg0IiB3aWR0aD0iMTYiIGhlaWdodD0iMTgiIHJ4PSIxIiBmaWxsPSIjMmQ2ZTJkIi8+CiAgPHJlY3QgeD0iMCIgeT0iMTA0IiB3aWR0aD0iMTYiIGhlaWdodD0iMjIiIHJ4PSIxIiBmaWxsPSIjOGI2OTE0Ii8+CiAgPHJlY3QgeD0iMCIgeT0iMTI4IiB3aWR0aD0iMTYiIGhlaWdodD0iMjAiIHJ4PSIxIiBmaWxsPSIjNmIxYTZiIi8+CiAgPHJlY3QgeD0iMCIgeT0iMTUwIiB3aWR0aD0iMTYiIGhlaWdodD0iMTUiIHJ4PSIxIiBmaWxsPSIjMmE0YTJhIi8+CgogIDwhLS0gV2FybSBhbWJpZW50IGxpZ2h0IG92ZXJsYXkgLS0+CiAgPHJhZGlhbEdyYWRpZW50IGlkPSJ3YXJtTGlnaHQiIGN4PSI3MCUiIGN5PSI2MCUiIHI9IjYwJSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjYzg4OTRhIiBzdG9wLW9wYWNpdHk9IjAuMTIiLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2M4ODk0YSIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgPC9yYWRpYWxHcmFkaWVudD4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIyMCIgZmlsbD0idXJsKCN3YXJtTGlnaHQpIi8+CiAgCiAgPCEtLSBTdWJ0bGUgdmlnbmV0dGUgLS0+CiAgPHJhZGlhbEdyYWRpZW50IGlkPSJ2aWduZXR0ZSIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNzAlIj4KICAgIDxzdG9wIG9mZnNldD0iNjAlIiBzdG9wLWNvbG9yPSIjMDAwIiBzdG9wLW9wYWNpdHk9IjAiLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIwLjQ1Ii8+CiAgPC9yYWRpYWxHcmFkaWVudD4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIyMCIgZmlsbD0idXJsKCN2aWduZXR0ZSkiLz4KPC9zdmc+Cg==" alt="Cozy reading nook with warm light" style="width: 100%; height: 100%; object-fit: cover; opacity: 1; transition: opacity 0.8s; display: block;">
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom, transparent 40%, rgba(10,20,10,0.85) 100%);"></div>
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:16px 18px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:4px;">✦ Weekly Spark</div>
+          <div style="font-size:18px;font-weight:600;color:#fff;line-height:1.35;font-family:Georgia,serif;">Find your reading spot — 20 minutes this week.</div>
+        </div>
+        <div id="spark-loading" style="position: absolute; inset: 0px; display: none; align-items: center; justify-content: center; background: rgb(26, 42, 26);">
+          <div style="text-align:center;">
+            <div style="width:32px;height:32px;border:2px solid rgba(255,255,255,0.15);border-top-color:rgba(255,255,255,0.6);border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 10px;"></div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.06em;">Generating image…</div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:14px 18px 16px;">
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.65;">Your Hobbies list says it: <em>Read 1 book/month — find a physical space for this.</em> You wrote "find a space" because you know the environment matters. With Downstate days this week, you've got a perfect scouting opportunity — a quiet coffee shop, a corner of the office, somewhere that becomes <em>your</em> reading place. Even just identifying the spot counts. 20 minutes is all it takes.</p>
+      </div>
+    </div>
+
+  </div><!-- end .grid -->
+</div><!-- end .page -->
+
+<!-- Issue Detail Modal -->
+<div id="issue-modal-overlay" onclick="closeIssueModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;backdrop-filter:blur(2px);"></div>
+<div id="issue-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1001;width:min(520px,92vw);background:var(--bg-primary);border-radius:var(--radius-lg);box-shadow:rgba(0,0,0,0.25) 0px 20px 60px;padding:24px;border:1px solid var(--border-mid);">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+    <span id="modal-icon" style="font-size:18px;">🔵</span>
+    <div style="flex:1;">
+      <div id="modal-label" style="font-size:10px;color:var(--text-tertiary);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px;">Check In Item</div>
+      <div id="modal-title" style="font-size:15px;font-weight:600;color:var(--text-primary);">—</div>
+    </div>
+    <button onclick="closeIssueModal()" style="background:none;border:none;color:var(--text-tertiary);cursor:pointer;font-size:20px;line-height:1;padding:2px 6px;">×</button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px;">
+    <div>
+      <label style="font-size:11px;color:var(--text-tertiary);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:6px;">Notes</label>
+      <textarea id="modal-notes" rows="4" placeholder="Add notes, context, or background info..." style="width:100%;background:var(--bg-secondary);border:1px solid var(--border-mid);border-radius:var(--radius-md);padding:10px 12px;font-size:13.5px;color:var(--text-primary);font-family:var(--font-sans);resize:vertical;outline:none;line-height:1.6;"></textarea>
+    </div>
+    <div>
+      <label style="font-size:11px;color:var(--text-tertiary);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:6px;">Status</label>
+      <select id="modal-status" style="width:100%;background:var(--bg-secondary);border:1px solid var(--border-mid);border-radius:var(--radius-md);padding:9px 12px;font-size:13.5px;color:var(--text-primary);font-family:var(--font-sans);outline:none;">
+        <option value="">— Not set —</option>
+        <option value="not-started">⬜ Not Started</option>
+        <option value="in-progress">🔄 In Progress</option>
+        <option value="blocked">🚫 Blocked</option>
+        <option value="done">✅ Done</option>
+      </select>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border-light);">
+    <button onclick="deleteIssueFromModal()" style="background:none;border:1px solid var(--border-mid);color:var(--text-tertiary);border-radius:var(--radius-md);padding:8px 14px;font-size:13px;cursor:pointer;">🗑 Delete</button>
+    <button onclick="saveIssueModal()" style="background:var(--accent-blue);color:#fff;border:none;border-radius:var(--radius-md);padding:9px 20px;font-size:13.5px;font-weight:600;cursor:pointer;">Save</button>
+  </div>
+</div>
+
+<script>
+// ================================================================
+// CALENDAR
+// ================================================================
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const calendarEvents = [
+  // Tue May 26 (Today)
+  {title:"LT Level 10",start:"2026-05-26T10:30",end:"2026-05-26T12:00"},
+  {title:"Projects Check In",start:"2026-05-26T13:00",end:"2026-05-26T13:30"},
+  {title:"Hey Sunshine!",start:"2026-05-26T14:00",end:"2026-05-26T15:00",renee:true},
+  {title:"Birmingham Lease Review",start:"2026-05-26T15:00",end:"2026-05-26T16:00"},
+  {title:"Quick Sample of Mule Formulation",start:"2026-05-26T16:00",end:"2026-05-26T16:30"},
+  // Wed May 27
+  {title:"Downstate",start:"2026-05-27",allDay:true},
+  {title:"Renee Touch Base / Planner Check In",start:"2026-05-27T09:00",end:"2026-05-27T10:00",renee:true},
+  {title:"Summit Meeting with Jason",start:"2026-05-27T10:00",end:"2026-05-27T11:00"},
+  // Thu May 28
+  {title:"Downstate",start:"2026-05-28",allDay:true},
+  {title:"Buffer Day",start:"2026-05-28",allDay:true},
+  // Fri May 29
+  {title:"Good Morning Sunshine!",start:"2026-05-29T09:30",end:"2026-05-29T10:00",renee:true},
+  {title:"Mercer Advisors Check-in Call",start:"2026-05-29T10:30",end:"2026-05-29T10:45"},
+  // Mon Jun 1
+  {title:"Labs for Davenport",start:"2026-06-01T09:45",end:"2026-06-01T10:15"},
+  {title:"Sales L10",start:"2026-06-01T10:00",end:"2026-06-01T11:30"},
+  // Tue Jun 2
+  {title:"Jason/Julie Coffee Hour",start:"2026-06-02T09:00",end:"2026-06-02T10:00"},
+  {title:"LT Level 10",start:"2026-06-02T10:30",end:"2026-06-02T12:00"},
+  {title:"Projects Check In",start:"2026-06-02T13:00",end:"2026-06-02T13:30"},
+  {title:"LT Photo Shoot",start:"2026-06-02T12:00",end:"2026-06-02T13:00"},
+  {title:"Working Genius Sales Session",start:"2026-06-02T14:00",end:"2026-06-02T15:30"},
+  {title:"HOLD: Liberty Meeting",start:"2026-06-02T16:00",end:"2026-06-02T18:00"},
+  {title:"Bball Shootout – Suttons Bay",start:"2026-06-02T17:15",end:"2026-06-02T20:30"},
+  // Wed Jun 3
+  {title:"Summer KickOff SOC",start:"2026-06-03T09:00",end:"2026-06-03T16:00"},
+];
+function fmt(d){let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'pm':'am';h=h%12||12;return m===0?h+ap:h+':'+String(m).padStart(2,'0')+ap;}
+function renderCalendar(){
+  const now=new Date('2026-05-26');
+  const el=document.getElementById('cal-events');
+  el.style.gridTemplateColumns='repeat(9,1fr)';
+  const cols=[];
+  for(let i=0;i<9;i++){const d=new Date('2026-05-26T00:00:00');d.setDate(d.getDate()+i);cols.push({date:d,events:[]});}
+  calendarEvents.forEach(ev=>{
+    const evDate=ev.start.includes('T')?new Date(ev.start):new Date(ev.start+'T00:00:00');
+    const col=cols.find(c=>c.date.toDateString()===evDate.toDateString());
+    if(col)col.events.push(ev);
+  });
+  el.innerHTML=cols.map(col=>{
+    const isToday=col.date.toDateString()===now.toDateString();
+    const eventsHtml=col.events.length===0?`<div class="cal-empty">—</div>`:col.events.map(ev=>{
+      const d=new Date(ev.start);const dEnd=ev.end?new Date(ev.end):null;
+      const timeStr=ev.allDay?'All day':(fmt(d)+(dEnd?'–'+fmt(dEnd):''));
+      const cls=ev.renee?'ev-renee':(isToday?'ev-today':'ev-upcoming');
+      return`<div class="cal-event ${cls}"><div class="cal-title">${ev.title}</div><div class="cal-time">${timeStr}</div></div>`;
+    }).join('');
+    return`<div class="cal-col${isToday?' is-today':''}"><div class="cal-col-header"><div class="cal-col-dow">${DAYS[col.date.getDay()]}</div><div class="cal-col-num">${col.date.getDate()}</div></div><div class="cal-col-events">${eventsHtml}</div></div>`;
+  }).join('');
+}
+
+// ================================================================
+// SALES TABLE
+// ================================================================
+const salesData=[
+  {channel:'Ann Arbor Retail',sales:166626.12,salesLY:148718.44,salesOP:157199.39,emails:1064},
+  {channel:'Charlevoix Retail',sales:32325.88,salesLY:31955.88,salesOP:34186.20,emails:211},
+  {channel:'Frankenmuth Retail',sales:95762.43,salesLY:90899.69,salesOP:96413.42,emails:668},
+  {channel:'Glen Arbor Retail',sales:90031.79,salesLY:86918.25,salesOP:91900.67,emails:767},
+  {channel:'Holland Retail',sales:289827.94,salesLY:268525.36,salesOP:281952.27,emails:2557},
+  {channel:'Lansing Retail',sales:39215.36,salesLY:0,salesOP:56473.78,emails:575},
+  {channel:'Mackinaw City Retail',sales:29684.57,salesLY:5097.08,salesOP:10056.76,emails:260},
+  {channel:'Traverse City Retail',sales:272277.46,salesLY:237808.32,salesOP:250238.02,emails:1908},
+  {channel:'All Retail',sales:null,salesLY:null,salesOP:null,emails:null,isSubtotal:true},
+  {channel:'Web Order',sales:184467.26,salesLY:147800.74,salesOP:167146.08,emails:null},
+  {channel:'Mail Order',sales:8947.20,salesLY:8102.94,salesOP:5672.05,emails:null},
+  {channel:'Corporate Order',sales:8753.36,salesLY:23112.81,salesOP:27537.60,emails:null},
+  {channel:'Amazon Order',sales:8136.92,salesLY:0,salesOP:17069.85,emails:null},
+  {channel:'WB/MO/CP Total',sales:null,salesLY:null,salesOP:null,emails:null,isSubtotal:true},
+  {channel:'Wholesale Order',sales:167672.70,salesLY:142946.44,salesOP:151865.37,emails:null},
+  {channel:'Public House',sales:28274.01,salesLY:40938.80,salesOP:42647.18,emails:null},
+  {channel:'Total',sales:null,salesLY:null,salesOP:null,emails:null,isTotal:true},
+];
+function calcSubtotals(){
+  const retail=salesData.filter(r=>r.channel.includes('Retail')&&!r.isSubtotal);
+  const wbmo=salesData.filter(r=>['Web Order','Mail Order','Corporate Order','Amazon Order'].includes(r.channel));
+  const ar=salesData.find(r=>r.channel==='All Retail');
+  ar.sales=retail.reduce((s,r)=>s+r.sales,0);ar.salesLY=retail.reduce((s,r)=>s+r.salesLY,0);ar.salesOP=retail.reduce((s,r)=>s+r.salesOP,0);ar.emails=retail.reduce((s,r)=>s+(r.emails||0),0);
+  const wb=salesData.find(r=>r.channel==='WB/MO/CP Total');
+  wb.sales=wbmo.reduce((s,r)=>s+r.sales,0);wb.salesLY=wbmo.reduce((s,r)=>s+r.salesLY,0);wb.salesOP=wbmo.reduce((s,r)=>s+r.salesOP,0);
+  const tot=salesData.find(r=>r.isTotal);const ws=salesData.find(r=>r.channel==='Wholesale Order');const ph=salesData.find(r=>r.channel==='Public House');
+  tot.sales=ar.sales+wb.sales+ws.sales+ph.sales;tot.salesLY=ar.salesLY+wb.salesLY+ws.salesLY+ph.salesLY;tot.salesOP=ar.salesOP+wb.salesOP+ws.salesOP+ph.salesOP;
+}
+function fmtMoney(v){if(v===null||v===undefined)return'—';return'$'+Math.round(v).toLocaleString('en-US');}
+function fmtPct(sales,base){if(!base||base===0)return'—';const p=((sales-base)/Math.abs(base))*100;const color=p>=0?'#1a6bbf':'#8b1a1a';return`<span style="color:${color}">${p>=0?'+':''}${p.toFixed(1)}%</span>`;}
+function renderSalesTable(){
+  calcSubtotals();
+  const tbody=document.getElementById('sales-table-body');
+  tbody.innerHTML=salesData.map(r=>{
+    const bold=r.isSubtotal||r.isTotal?'font-weight:500;':'';const bg=r.isSubtotal||r.isTotal?'background:var(--bg-secondary);':'';
+    const border=(r.isSubtotal||r.isTotal)?'border-top:0.5px solid var(--border-mid);border-bottom:0.5px solid var(--border-mid);':'border-bottom:0.5px solid var(--border-light);';
+    return`<tr style="${bg}${border}${bold}"><td style="padding:5px 8px;color:var(--text-primary)">${r.channel}</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">${fmtMoney(r.sales)}</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">${fmtMoney(r.salesLY)}</td><td style="text-align:right;padding:5px 8px">${r.salesLY!==null?fmtPct(r.sales,r.salesLY):'—'}</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">${fmtMoney(r.salesOP)}</td><td style="text-align:right;padding:5px 8px">${r.salesOP!==null?fmtPct(r.sales,r.salesOP):'—'}</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">${r.emails!==null?r.emails.toLocaleString():'—'}</td></tr>`;
+  }).join('');
+}
+
+// ================================================================
+// ISSUES
+// ================================================================
+const STORAGE_ISSUES='cr-issues-v2';
+const DEFAULT_ISSUES=[
+  {id:1778153340044,text:"PPP check in",type:"checkin"},
+  {id:1778153392402,text:"email and calendar review",type:"checkin"},
+  {id:1777471206220,text:"executive pulse",type:"checkin",notes:"https://cherryrepublic-my.sharepoint.com/:x:/r/personal/reneeb_cherryrepublic_co…"},
+  {id:1778153324369,text:"buffer check in next week instead of weds",type:"checkin"},
+  {id:1778096346819,text:"Liberty meeting for All Managers day before SOC",type:"checkin",notes:"Themes:\nMerchandising\n\nEmployees/Staff\n\nCustomer experience\n\nOperations"},
+  {id:1777471276683,text:"weekly planner",type:"checkin"},
+  {id:1777303692311,text:"book check in",type:"smiley"},
+  {id:1777320418609,text:"recharge review",type:"smiley"}
+];
+let issues=[];
+try{const stored=localStorage.getItem(STORAGE_ISSUES);issues=stored?JSON.parse(stored):DEFAULT_ISSUES;}catch(e){issues=DEFAULT_ISSUES;}
+function saveIssues(){try{localStorage.setItem(STORAGE_ISSUES,JSON.stringify(issues));}catch(e){}}
+let dragSrcId=null;
+function renderIssues(){
+  const el=document.getElementById('issues-list');
+  if(!issues.length){el.innerHTML='<div class="empty-state">No issues or opportunities yet.</div>';return;}
+  el.innerHTML=issues.map(it=>{
+    const icon=it.type==='opportunity'?'🟢':it.type==='checkin'?'🔵':it.type==='smiley'?'😊':'🔴';
+    const label=it.type==='opportunity'?'Opportunity':it.type==='checkin'?'Check In Item':it.type==='smiley'?'Smiley Face':'Issue';
+    const statusBadge=it.status?{'not-started':'⬜','in-progress':'🔄','blocked':'🚫','done':'✅'}[it.status]||'':'';
+    return`<div data-id="${it.id}" draggable="true" style="display:flex;align-items:flex-start;gap:10px;background:var(--bg-secondary);border-radius:var(--radius-md);padding:10px 12px;cursor:grab;transition:opacity 0.15s,box-shadow 0.15s;" ondragstart="issueDragStart(event,${it.id})" ondragover="issueDragOver(event)" ondrop="issueDrop(event,${it.id})" ondragend="issueDragEnd(event)">
+      <span style="color:var(--text-tertiary);font-size:14px;flex-shrink:0;margin-top:2px;cursor:grab;user-select:none;line-height:1;" title="Drag to reorder">⠿</span>
+      <span style="font-size:13px;flex-shrink:0;margin-top:1px;">${icon}</span>
+      <div style="flex:1;cursor:pointer;" onclick="openIssueModal(${it.id})">
+        <div style="font-size:11px;color:var(--text-tertiary);margin-bottom:3px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;">${label}${statusBadge?' &nbsp;'+statusBadge:''}</div>
+        <div style="font-size:13.5px;color:var(--text-primary);line-height:1.5;">${it.text}</div>
+        ${it.notes?`<div style="margin-top:4px;font-size:11.5px;color:var(--text-tertiary);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px;">${it.notes.substring(0,80)}${it.notes.length>80?'…':''}</div>`:''}
+      </div>
+      <button onclick="deleteIssue(${it.id})" style="background:none;border:none;color:var(--text-tertiary);cursor:pointer;font-size:16px;line-height:1;padding:0 4px;opacity:0.7;">×</button>
+    </div>`;
+  }).join('');
+}
+let modalIssueId=null;
+function openIssueModal(id){
+  const it=issues.find(i=>i.id===id);if(!it)return;
+  modalIssueId=id;
+  const icon=it.type==='opportunity'?'🟢':it.type==='checkin'?'🔵':it.type==='smiley'?'😊':'🔴';
+  const label=it.type==='opportunity'?'Opportunity':it.type==='checkin'?'Check In Item':it.type==='smiley'?'Smiley Face':'Issue';
+  document.getElementById('modal-icon').textContent=icon;
+  document.getElementById('modal-label').textContent=label;
+  document.getElementById('modal-title').textContent=it.text;
+  document.getElementById('modal-notes').value=it.notes||'';
+  document.getElementById('modal-status').value=it.status||'';
+  document.getElementById('issue-modal-overlay').style.display='block';
+  document.getElementById('issue-modal').style.display='block';
+}
+function closeIssueModal(){document.getElementById('issue-modal-overlay').style.display='none';document.getElementById('issue-modal').style.display='none';modalIssueId=null;}
+function saveIssueModal(){
+  if(!modalIssueId)return;
+  issues=issues.map(i=>i.id===modalIssueId?{...i,notes:document.getElementById('modal-notes').value.trim(),status:document.getElementById('modal-status').value}:i);
+  saveIssues();renderIssues();closeIssueModal();
+}
+function deleteIssueFromModal(){if(!modalIssueId)return;issues=issues.filter(i=>i.id!==modalIssueId);saveIssues();renderIssues();closeIssueModal();}
+function issueDragStart(e,id){dragSrcId=id;e.dataTransfer.effectAllowed='move';setTimeout(()=>e.currentTarget.style.opacity='0.4',0);}
+function issueDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';e.currentTarget.style.boxShadow='0 0 0 2px var(--accent-blue)';}
+function issueDrop(e,targetId){e.preventDefault();e.currentTarget.style.boxShadow='';if(dragSrcId===targetId)return;const fromIdx=issues.findIndex(i=>i.id===dragSrcId);const toIdx=issues.findIndex(i=>i.id===targetId);const moved=issues.splice(fromIdx,1)[0];issues.splice(toIdx,0,moved);saveIssues();renderIssues();}
+function issueDragEnd(e){document.querySelectorAll('#issues-list > div').forEach(d=>{d.style.opacity='';d.style.boxShadow='';});}
+function addIssue(){
+  const inp=document.getElementById('issue-input');const type=document.getElementById('issue-type').value;const text=inp.value.trim();if(!text)return;
+  issues.push({id:Date.now(),text,type});saveIssues();inp.value='';renderIssues();
+}
+function deleteIssue(id){issues=issues.filter(i=>i.id!==id);saveIssues();renderIssues();}
+
+// ================================================================
+// ROCKS / GOALS
+// ================================================================
+const STORAGE_GOALS='cr-dashboard-goals-v4';
+const GOAL_DEFAULTS=[
+  {id:1,text:'Birmingham on target for Q3 opening',done:false,criteria:['Construction has commenced','Budget is prepared and agreed upon for buildout','<s>Store proven process guide is being utilized</s>','<s>Roles and accountability adjustments are agreed upon</s>','Fulfillment group has understanding of projections by end of Q3 for sales for second half of the year','Proven Process Applied']},
+  {id:2,text:'Sales shit on target to be ready for summer',done:false,criteria:['Inventory practices are adjusted and SOPs complete','FMU refurnished','TC cafe updated','Pub service and customer flow is complete','Remerchandising by store is done','New product plan is communicated and in place for stores','Training program updates have been implemented']},
+  {id:3,text:'Lansing performance review is in process',done:false,criteria:['4-5 metrics that help us determine whether the store is successful','Next steps for measuring are established','<s>Timeline established for determination</s>','Routing for proposals established (staying closed, open, other location, etc.)','<s>Established end date to the process</s>']},
+  {id:4,text:'Accountability adjustments for the team',done:false,criteria:['<s>Specific plan with times, dates, and roles defined and shared</s>',"<s>Dawn's role redefined</s>","<s>Ellen's role redefined</s>",'<s>Northern stores management plan defined</s>','Management team for Birmingham is laid out','Sales data analyst deliverables are clear for summer season',"<s>Renee's attitude is sunshine and fresh air all quarter</s>"]},
+  {id:5,text:'Remerchandising to improve profitability from summer sales',done:false,criteria:['Product categories are remerchandised','Activities done before Memorial Day','Product changes are monitored and data is prepared to be collected over the course of the summer','Projected data analysis supplied to DFC']},
+  {id:6,text:'2nd Pilot store momentum is rolling',done:false,criteria:['2-3 locations identified','Grand Rapids market looked at','Partridge Creek popup is analyzed','DC market has in-person visit','Lansing store evaluated','Initial cities in Florida identified as potential spots','Pilot kit is solidified and ready to be built','Proven Process Applied']},
+];
+let goals=[];
+try{
+  const stored=JSON.parse(localStorage.getItem(STORAGE_GOALS)||'[]');
+  goals=GOAL_DEFAULTS.map(def=>{const saved=stored.find(s=>s.id===def.id);return{...def,done:saved?saved.done:false};});
+  stored.filter(s=>s.id>6).forEach(s=>goals.push(s));
+}catch(e){goals=GOAL_DEFAULTS.map(d=>({...d}));}
+function saveGoals(){try{localStorage.setItem(STORAGE_GOALS,JSON.stringify(goals));}catch(e){}}
+saveGoals();
+function renderGoals(){
+  const el=document.getElementById('goal-list');
+  if(!goals.length){el.innerHTML='<div class="empty-state">No goals yet.</div>';return;}
+  el.innerHTML=goals.map(g=>{
+    const ch=(g.criteria||[]).length?`<ul style="margin:5px 0 2px 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;">${(g.criteria||[]).map(c=>`<li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>${c}</span></li>`).join('')}</ul>`:'';
+    return`<div class="goal-item" style="display:flex;flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;align-items:flex-start;gap:10px;"><div class="goal-check ${g.done?'done':''}" onclick="toggleGoal(${g.id})"></div><div class="goal-text ${g.done?'done':''}">${g.text}</div><button class="goal-del" onclick="deleteGoal(${g.id})">×</button></div>${ch}</div>`;
+  }).join('');
+}
+function toggleGoal(id){goals=goals.map(g=>g.id===id?{...g,done:!g.done}:g);saveGoals();renderGoals();}
+function deleteGoal(id){goals=goals.filter(g=>g.id!==id);saveGoals();renderGoals();}
+function addGoal(){
+  const inp=document.getElementById('goal-input');const text=inp.value.trim();if(!text)return;
+  goals.push({id:Date.now(),text,done:false,criteria:[]});saveGoals();inp.value='';renderGoals();
+}
+
+// Date
+document.getElementById('live-date').innerHTML=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})+'<br><span style="color:var(--text-tertiary);font-size:11px">Cherry Republic</span>';
+
+// Download
+function downloadHTML(){
+  const blob=new Blob([document.documentElement.outerHTML],{type:'text/html'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='jason-command-center.html';a.click();URL.revokeObjectURL(url);
+}
+
+
+// ================================================================
+// PILOT PROVEN PROCESS WHEEL
+// ================================================================
+const PPP_SEGS=[
+  {name:"Growth",owner:"Todd",color:"#3d6b5e",startDeg:-54,bullets:["• Scaling","• Expansion","• Strategy"],
+   subs:[{name:"Scaling",items:["Demand from company assessed and mapped out (fulfillment, IT, etc)"]},{name:"Expansion",items:["3 year projected sales goals","General customer and staff growth goals","Demographic data meets our business model"]},{name:"Strategy",items:["Staffing needs to fit 3 year projections","Demand on rest of business assessed"]}]},
+  {name:"Location\nEvaluation",owner:"Logan",color:"#c4a96a",startDeg:-18,bullets:["• Site analysis","• Demographics","• Lease"],
+   subs:[{name:"Site analysis",items:[]},{name:"Demographics",items:[]},{name:"Lease",items:[]}]},
+  {name:"Design",owner:"Rick",color:"#7a2e35",startDeg:18,bullets:["• Layout","• Branding","• User experience"],
+   subs:[{name:"Layout",items:["Site drawings received","Design created and approved"]},{name:"Branding",items:["Reflection of regional culture included","Graphics related content needs communicated to MKT"]},{name:"User experience",items:["Initial customer experience mapped","POS, sampling, and storage taken into account"]}]},
+  {name:"Budget",owner:"Renee",color:"#a89070",startDeg:54,bullets:["• Forecasting","• Cost control","• ROI"],
+   subs:[{name:"Forecasting",items:["Budget for build received from leadership/finance","Tool shared between Admin and Sales to track all expenses"]},{name:"Cost control",items:["Regular check ins between sales and finance to remain on track","Maintain tracking of spend as we go"]},{name:"ROI",items:["Initial setup of reporting of sales is complete before the first sale happens","Dashboard is rolled into regular metrics and reviewed weekly as part of L10"]}]},
+  {name:"Project\nManagement",owner:"Ryan Kincaid",color:"#3a4f5c",startDeg:90,bullets:["• Pre-Construction","• Construction"],
+   subs:[{name:"Pre-construction",items:["Projected timeline supplied","Estimates approved","Construction drawings approved","Construction drawings submitted for permitting","Contractor bidding process completed"]},{name:"Construction",items:["Demolition","Construction phase timeline","\"Finish\" work installation","Final inspections and approvals"]}]},
+  {name:"Licensing &\nPermitting",owner:"Admin",color:"#5c3a4f",startDeg:126,bullets:["• Permits","• Compliance","• Regulations"],
+   subs:[{name:"Permits",items:["Dept of Ag inspection","Liquor license","Business license (out of state)"]},{name:"Compliance",items:["Local jurisdiction requirements","Tax filings"]},{name:"Regulations",items:["Workplace contracts","Vendor contracts (GFS, Fedex, Union regulations, etc)"]}]},
+  {name:"Staffing",owner:"Ellen",color:"#3d6b5e",startDeg:162,bullets:["• Recruiting","• Training","• Retention"],
+   subs:[{name:"Hiring of management team timeline",items:[]},{name:"Recruiting",items:["Sales and Admin work together closely to recruit","Staffing goals set and met"]},{name:"Training",items:["Training manager disperses guides and leads trainings for new employees","Staff is rolled into ongoing training initiatives"]}]},
+  {name:"Logistics\nand IT",owner:"Dawn",color:"#7a2e35",startDeg:198,bullets:["• Supply chain","• Distribution and Inventory","• Technological foundations"],
+   subs:[
+    {name:"Logistics",items:[
+      {name:"Special deliveries",subitems:["Fixtures","Other deliveries"]},
+      {name:"Supply chain",subitems:["Sales works with Fulfillment on initial inventory deliveries"]},
+      {name:"Distribution",subitems:["Sales and Fulfillment design ongoing order cadence"]},
+      {name:"Inventory",subitems:["Storage space agreed upon","Inventory specialist is appointed per location","Inventory levels are watched and tweaked until \"right\""]}
+    ]},
+    {name:"IT",items:["Broadband subscriptions","POS","IT Hub","Security system","Office accessibility and requirements"]}
+  ]},
+  {name:"Marketing",owner:"Rick",color:"#a89070",startDeg:234,bullets:["• Branding","• Outreach","• Campaigns"],
+   subs:[{name:"Branding",items:["Graphics related elements are ordered","Exterior signage is monitored — permitting may be required"]},{name:"Outreach",items:["Initial flyers created and sent to store for distribution","Email, social media, and texting blasts are created","Grand opening"]},{name:"Campaigns",items:["Email","Social media","Texting","Physical media"]}]},
+  {name:"Evaluation",owner:"Pranav",color:"#3a4f5c",startDeg:270,bullets:["• KPI's","• Reporting","• Feedback"],
+   subs:[{name:"KPI's",items:[]},{name:"Reporting",items:["P&Ls and Sales plans created before first year is complete"]},{name:"Feedback",items:["Successes and challenges from store manager are captured"]}]}
+];
+const PPP_CENTER={
+  name:"Birmingham\nStore Opening",owner:"Facilitator: Renee",sectionTitle:"Facilitation",color:"#3a3222",
+  subs:[
+    {name:"Planning",items:["Project accelerator completed","Store opening team identified and meeting cadence created and maintained","Communication pathways created (teams, email, meetings, etc)"]},
+    {name:"Timeline",items:["Asana project created"]},
+    {name:"Coordination",items:["Project documents maintained and tracked","Communication channels remain open","Debrief completed"]}
+  ]
+};
+
+const PPP_STORE='ppp_state_birmingham';
+function pppLoadState(){try{const s=localStorage.getItem(PPP_STORE);if(s)return JSON.parse(s);}catch(e){}return null;}
+const _pppSaved=pppLoadState();
+const pppNotes=_pppSaved?_pppSaved.notes:{};
+const pppCompletion=_pppSaved&&_pppSaved.completion?[..._pppSaved.completion]:new Array(11).fill(0);
+function pppPersist(){try{localStorage.setItem(PPP_STORE,JSON.stringify({notes:pppNotes,completion:pppCompletion}));}catch(e){}}
+
+const pppCv=document.getElementById('ppp-c');
+const pppCtx=pppCv.getContext('2d');
+const PPP_W=700,PPP_CX=350,PPP_CY=350,PPP_OR=330,PPP_IR=122,PPP_SLICE=36,PPP_GAP=1.2;
+function pppRad(d){return d*Math.PI/180;}
+
+function pppDrawSlice(s,i){
+  const a1=pppRad(s.startDeg+PPP_GAP),a2=pppRad(s.startDeg+PPP_SLICE-PPP_GAP);
+  pppCtx.beginPath();
+  pppCtx.moveTo(PPP_CX+PPP_IR*Math.cos(a1),PPP_CY+PPP_IR*Math.sin(a1));
+  pppCtx.arc(PPP_CX,PPP_CY,PPP_OR,a1,a2);
+  pppCtx.arc(PPP_CX,PPP_CY,PPP_IR,a2,a1,true);
+  pppCtx.closePath();
+  pppCtx.fillStyle=s.color;pppCtx.fill();
+  const pct=pppCompletion[i]/100;
+  if(pct>0){
+    const fillR=PPP_IR+(PPP_OR-PPP_IR)*pct;
+    const grad=pppCtx.createRadialGradient(PPP_CX,PPP_CY,PPP_IR,PPP_CX,PPP_CY,PPP_OR);
+    grad.addColorStop(0,'rgba(255,255,255,0.55)');grad.addColorStop(pct*0.85,'rgba(255,255,255,0.25)');grad.addColorStop(pct,'rgba(255,255,255,0)');grad.addColorStop(1,'rgba(255,255,255,0)');
+    pppCtx.beginPath();pppCtx.moveTo(PPP_CX+PPP_IR*Math.cos(a1),PPP_CY+PPP_IR*Math.sin(a1));pppCtx.arc(PPP_CX,PPP_CY,fillR,a1,a2);pppCtx.arc(PPP_CX,PPP_CY,PPP_IR,a2,a1,true);pppCtx.closePath();pppCtx.fillStyle=grad;pppCtx.fill();
+    pppCtx.beginPath();pppCtx.arc(PPP_CX,PPP_CY,fillR,a1,a2);pppCtx.lineWidth=2;pppCtx.strokeStyle='rgba(255,255,255,0.7)';pppCtx.stroke();
+  }
+}
+
+function pppDrawText(s){
+  const amid=pppRad(s.startDeg+PPP_SLICE/2);const MR=(PPP_OR+PPP_IR)/2;
+  const tx=PPP_CX+MR*Math.cos(amid),ty=PPP_CY+MR*Math.sin(amid);
+  const isLight=s.color==='#c4a96a'||s.color==='#a89070';
+  const tc=isLight?'#2e2a14':'#f4efe0';
+  const nameLines=s.name.split('\n');const lineH=14;
+  const totalLines=nameLines.length+1+s.bullets.length;const totalH=totalLines*lineH+4;
+  pppCtx.textAlign='center';pppCtx.textBaseline='middle';
+  let sy=ty-totalH/2;
+  nameLines.forEach((line,i)=>{pppCtx.font='bold 12px Georgia,serif';pppCtx.fillStyle=tc;pppCtx.fillText(line,tx,sy+i*lineH+lineH/2);});
+  sy+=nameLines.length*lineH;
+  pppCtx.font='italic 10px Georgia,serif';pppCtx.fillStyle=isLight?'rgba(46,42,20,0.75)':'rgba(244,239,224,0.85)';pppCtx.fillText(s.owner,tx,sy+lineH/2);sy+=lineH+4;
+  s.bullets.forEach((line,i)=>{pppCtx.font='11px Georgia,serif';pppCtx.fillStyle=tc;pppCtx.fillText(line,tx,sy+i*lineH+lineH/2);});
+}
+
+function pppDrawCenter(){
+  pppCtx.beginPath();pppCtx.arc(PPP_CX,PPP_CY,PPP_IR-2,0,2*Math.PI);pppCtx.fillStyle='#ffffff';pppCtx.fill();
+  const innerR=PPP_IR-16;
+  pppCtx.beginPath();pppCtx.arc(PPP_CX,PPP_CY,innerR,0,2*Math.PI);pppCtx.fillStyle='#f5f0e8';pppCtx.fill();
+  const pct=pppCompletion[10]/100;
+  if(pct>0){
+    const topY=PPP_CY+innerR,fillH=2*innerR*pct,fillTopY=topY-fillH;
+    pppCtx.save();pppCtx.beginPath();pppCtx.arc(PPP_CX,PPP_CY,innerR,0,2*Math.PI);pppCtx.clip();
+    const grad=pppCtx.createLinearGradient(PPP_CX,topY,PPP_CX,fillTopY);
+    grad.addColorStop(0,'rgba(120,120,120,0.55)');grad.addColorStop(0.6,'rgba(120,120,120,0.25)');grad.addColorStop(1,'rgba(120,120,120,0.05)');
+    pppCtx.fillStyle=grad;pppCtx.fillRect(PPP_CX-innerR,fillTopY,innerR*2,fillH);
+    pppCtx.beginPath();pppCtx.moveTo(PPP_CX-innerR,fillTopY);pppCtx.lineTo(PPP_CX+innerR,fillTopY);pppCtx.lineWidth=2;pppCtx.strokeStyle='rgba(255,255,255,0.7)';pppCtx.stroke();
+    pppCtx.restore();
+  }
+  pppCtx.beginPath();pppCtx.arc(PPP_CX,PPP_CY,innerR,0,2*Math.PI);pppCtx.lineWidth=1;pppCtx.strokeStyle='rgba(58,50,34,0.12)';pppCtx.stroke();
+  const lineH=18;const lines=[PPP_CENTER.owner,'Birmingham','Store','Opening'];
+  const totalH=lines.length*lineH;const startY=PPP_CY-totalH/2+lineH/2;
+  pppCtx.textAlign='center';pppCtx.textBaseline='middle';
+  pppCtx.font='italic 10px Georgia,serif';pppCtx.fillStyle='rgba(46,42,20,0.75)';pppCtx.fillText(lines[0],PPP_CX,startY);
+  lines.slice(1).forEach((l,i)=>{pppCtx.font='bold 16px Georgia,serif';pppCtx.fillStyle='#2e2518';pppCtx.fillText(l,PPP_CX,startY+(i+1)*lineH);});
+}
+
+function pppDraw(){
+  pppCtx.clearRect(0,0,PPP_W,PPP_W);
+  PPP_SEGS.forEach((s,i)=>pppDrawSlice(s,i));
+  PPP_SEGS.forEach(s=>pppDrawText(s));
+  pppDrawCenter();
+}
+
+let pppActive=null;
+function pppSaveActive(){
+  if(pppActive!==null){
+    pppNotes[pppActive]=document.getElementById('ppp-notes-box').value;
+    pppCompletion[pppActive]=parseInt(document.getElementById('ppp-completion-slider').value);
+    pppPersist();
+  }
+}
+
+function pppShowDetail(idx,seg,titleOverride){
+  pppSaveActive();pppActive=idx;pppDraw();
+  document.getElementById('ppp-wheel-wrap').style.display='none';
+  const dw=document.getElementById('ppp-detail-wrap');dw.style.display='block';
+  dw.style.borderLeft='4px solid '+seg.color;
+  const back=document.getElementById('ppp-back');back.style.background=seg.color;back.style.color='#fff';
+  document.getElementById('ppp-dtitle').textContent=titleOverride||seg.name.replace('\n',' ');
+  document.getElementById('ppp-dtitle').style.color=seg.color;
+  document.getElementById('ppp-completion-slider').value=pppCompletion[idx];
+  document.getElementById('ppp-completion-val').textContent=pppCompletion[idx]+'%';
+  document.getElementById('ppp-notes-box').value=pppNotes[idx]||'';
+  let html='';
+  seg.subs.forEach(sub=>{
+    html+=`<div class="ppp-sub"><div class="ppp-subname">${sub.name}</div>`;
+    if(sub.items&&sub.items.length){
+      html+='<ul class="ppp-subitems">';
+      sub.items.forEach(it=>{
+        if(typeof it==='string')html+=`<li>${it}</li>`;
+        else html+='<li>'+it.name+'<ul class="ppp-subitems ppp-subitems-nested">'+it.subitems.map(s=>'<li>'+s+'</li>').join('')+'</ul></li>';
+      });
+      html+='</ul>';
+    }else{html+='<p class="ppp-noitem">No checklist items yet</p>';}
+    html+='</div>';
+  });
+  document.getElementById('ppp-dcontent').innerHTML=html;
+}
+
+document.getElementById('ppp-completion-slider').addEventListener('input',e=>{
+  const v=parseInt(e.target.value);document.getElementById('ppp-completion-val').textContent=v+'%';
+  if(pppActive!==null){pppCompletion[pppActive]=v;pppDraw();pppPersist();}
+});
+
+pppCv.addEventListener('click',e=>{
+  const r=pppCv.getBoundingClientRect(),sc=700/r.width;
+  const x=(e.clientX-r.left)*sc,y=(e.clientY-r.top)*sc;
+  const dx=x-PPP_CX,dy=y-PPP_CY,d=Math.sqrt(dx*dx+dy*dy);
+  if(d<PPP_IR-5){pppShowDetail(10,PPP_CENTER,PPP_CENTER.sectionTitle);return;}
+  if(d>PPP_OR)return;
+  let ang=(Math.atan2(dy,dx)*180/Math.PI+360)%360;
+  const idx=PPP_SEGS.findIndex(s=>{
+    let start=(s.startDeg+360)%360,end=(start+PPP_SLICE)%360;
+    if(start<end)return ang>=start&&ang<end;
+    return ang>=start||ang<end;
+  });
+  if(idx<0)return;
+  pppShowDetail(idx,PPP_SEGS[idx]);
+});
+
+document.getElementById('ppp-back').addEventListener('click',()=>{
+  pppSaveActive();pppActive=null;
+  document.getElementById('ppp-detail-wrap').style.display='none';
+  document.getElementById('ppp-wheel-wrap').style.display='block';
+  pppDraw();
+});
+document.getElementById('ppp-notes-box').addEventListener('input',()=>{
+  if(pppActive!==null){pppNotes[pppActive]=document.getElementById('ppp-notes-box').value;pppPersist();}
+});
+
+function pppExport(){
+  pppSaveActive();
+  const data=JSON.stringify({notes:pppNotes,completion:pppCompletion},null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='ppp_birmingham_data.json';document.body.appendChild(a);a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},100);
+  pppToast('PPP data exported!');
+}
+function pppImport(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(data.notes)Object.assign(pppNotes,data.notes);
+      if(data.completion&&Array.isArray(data.completion))data.completion.forEach((v,i)=>{pppCompletion[i]=v;});
+      pppPersist();pppDraw();pppToast('PPP data imported!');
+    }catch(err){pppToast('Error reading file.');}
+  };
+  reader.readAsText(file);e.target.value='';
+}
+function pppToast(msg){
+  const t=document.getElementById('ppp-toast');t.textContent=msg;t.style.opacity='1';
+  setTimeout(()=>{t.style.opacity='0';},2500);
+}
+
+// ================================================================
+// INIT
+// ================================================================
+renderCalendar();
+renderSalesTable();
+renderIssues();
+renderGoals();
+pppDraw();
+// ================================================================
+// TEAM SNAPSHOT NOTES
+// ================================================================
+
+const TO_NOTES_KEY = 'jason-cmd-team-notes-v1';
+let toSaveTimer = null;
+
+function toNotesInit() {
+  const ta = document.getElementById('to-notes');
+  const saved = localStorage.getItem(TO_NOTES_KEY);
+  if (saved) ta.value = saved;
+  ta.addEventListener('input', () => {
+    clearTimeout(toSaveTimer);
+    document.getElementById('to-save-indicator').style.opacity = '0';
+    toSaveTimer = setTimeout(() => {
+      localStorage.setItem(TO_NOTES_KEY, ta.value);
+      const ind = document.getElementById('to-save-indicator');
+      ind.style.opacity = '1';
+      setTimeout(() => ind.style.opacity = '0', 2000);
+    }, 600);
+  });
+}
+
+toNotesInit();
+
+
+</script>
+
+
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</body></html>
