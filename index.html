@@ -119,6 +119,39 @@
   .cal-time { font-size: 10px; color: var(--text-secondary); margin-top: 1px; }
   .cal-empty { font-size: 11px; color: var(--text-tertiary); font-style: italic; text-align: center; margin-top: 6px; }
 
+  /* Goals */
+  .goal-list { display: flex; flex-direction: column; gap: 9px; }
+  .goal-check {
+    width: 18px; height: 18px; border: 1.5px solid var(--border-mid);
+    border-radius: 4px; flex-shrink: 0; margin-top: 1px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg-primary); transition: all 0.15s;
+  }
+  .goal-check:hover { border-color: var(--accent-blue); }
+  .goal-check.done { background: var(--accent-blue); border-color: var(--accent-blue); }
+  .goal-check.done::after {
+    content: '';
+    display: block; width: 5px; height: 9px;
+    border: 2px solid white; border-top: none; border-left: none;
+    transform: rotate(45deg) translateY(-1px);
+  }
+  .goal-text { font-size: 14px; color: var(--text-primary); line-height: 1.5; flex: 1; }
+  .goal-text.done { color: var(--text-tertiary); text-decoration: line-through; }
+  .goal-del {
+    background: none; border: none; color: var(--text-tertiary);
+    cursor: pointer; font-size: 16px; line-height: 1; padding: 0 2px;
+    opacity: 0; transition: opacity 0.15s;
+  }
+  .goal-item:hover .goal-del { opacity: 1; }
+  .goal-del:hover { color: #A32D2D; }
+  .add-goal-row { display: flex; gap: 7px; margin-top: 10px; }
+  .add-goal-input {
+    flex: 1; padding: 7px 10px; font-size: 13px;
+    border: 0.5px solid var(--border-mid); border-radius: var(--radius-md);
+    background: var(--bg-primary); color: var(--text-primary);
+    font-family: var(--font-sans);
+  }
+  .add-goal-input:focus { outline: none; border-color: var(--border-strong); }
 
   /* Buttons / Inputs */
   .btn {
@@ -144,7 +177,112 @@
 
   .empty-state { font-size: 13px; color: var(--text-secondary); padding: 6px 0; }
 
+  /* PPP Wheel Card */
+  #ppp-card { overflow: hidden; }
+  #ppp-wheel-wrap { width: 100%; }
+  #ppp-wheel-wrap canvas { width: 100%; display: block; cursor: pointer; }
+  #ppp-detail-wrap {
+    display: none;
+    padding: 1.2rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    margin-top: 4px;
+  }
+  #ppp-back {
+    margin-bottom: 1rem; padding: 6px 14px; border: none; border-radius: 5px;
+    cursor: pointer; font-size: 13px; color: #fff; font-family: var(--font-sans);
+  }
+  #ppp-dtitle { font-size: 17px; font-weight: bold; margin-bottom: 1rem; padding-bottom: 8px; border-bottom: 1px solid var(--border-mid); }
+  .ppp-sub { margin-bottom: 1rem; }
+  .ppp-subname { font-size: 13px; font-weight: bold; color: var(--text-primary); margin-bottom: 4px; }
+  .ppp-subitems { padding-left: 16px; list-style: disc; }
+  .ppp-subitems li { font-size: 12px; color: var(--text-secondary); line-height: 1.75; }
+  .ppp-subitems-nested { padding-left: 14px; list-style: circle; margin-top: 2px; }
+  .ppp-noitem { font-size: 12px; color: var(--text-tertiary); font-style: italic; }
+  .ppp-notes-wrap { margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--border-mid); }
+  .ppp-notes-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-secondary); margin-bottom: 6px; }
+  .ppp-notes-wrap textarea {
+    width: 100%; height: 72px; padding: 8px 10px; font-size: 13px;
+    font-family: var(--font-sans); border: 0.5px solid var(--border-mid);
+    border-radius: var(--radius-md); background: var(--bg-primary);
+    color: var(--text-primary); resize: vertical;
+  }
+  .ppp-notes-wrap textarea:focus { outline: none; border-color: var(--border-strong); }
+  .ppp-completion-wrap { margin-top: 1rem; display: flex; align-items: center; gap: 10px; }
+  .ppp-completion-wrap label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); white-space: nowrap; }
+  .ppp-completion-wrap input[type=range] { flex: 1; }
+  .ppp-completion-wrap span { font-size: 12px; color: var(--text-secondary); min-width: 32px; }
+  .ppp-toolbar { display: flex; gap: 7px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+  .ppp-toolbar button, .ppp-toolbar label {
+    padding: 5px 11px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-md);
+    cursor: pointer; font-size: 12px; font-family: var(--font-sans);
+    background: var(--bg-secondary); color: var(--text-secondary);
+  }
+  .ppp-toolbar button:hover, .ppp-toolbar label:hover { background: var(--bg-tertiary); }
+  .ppp-toolbar input[type=file] { display: none; }
+  #ppp-toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: #0d1f3c; color: #fff; padding: 8px 20px; border-radius: 20px;
+    font-size: 13px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 9999;
+  }
 
+  /* Team Overview */
+  #to-body { display: none; margin-top: 14px; }
+  .to-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 11px; }
+  .to-pc { background: var(--bg-secondary); border: 0.5px solid var(--border-light); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: border-color .15s; }
+  .to-pc:hover { border-color: var(--border-strong); }
+  .to-pch { display: flex; align-items: center; gap: 10px; padding: 0.8rem 1rem; border-bottom: 0.5px solid var(--border-light); }
+  .to-av { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+  .to-pcb { padding: 0.8rem 1rem; display: flex; flex-direction: column; gap: 7px; }
+  .to-sec { font-size: 10px; }
+  .to-sec-lbl { font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--text-tertiary); margin-bottom: 3px; }
+  .to-pip { display: inline-block; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .to-chip { font-size: 10px; padding: 1px 6px; border-radius: var(--radius-md); background: var(--bg-primary); border: 0.5px solid var(--border-light); display: inline-flex; align-items: center; gap: 3px; }
+  .to-bdg { display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: var(--radius-md); font-weight: 500; }
+  .to-pos { background: #E6F1FB; color: #0C447C; } .to-neg { background: #FCEBEB; color: #A32D2D; } .to-neu { background: var(--bg-tertiary); color: var(--text-secondary); }
+  .to-pro { background: #E6F1FB; color: #0C447C; } .to-per { background: var(--bg-tertiary); color: var(--accent-blue); }
+  .to-dim { color: var(--text-tertiary); font-style: italic; }
+  /* detail */
+  .to-dv { display: none; }
+  .to-dv.on { display: block; }
+  .to-dh { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 0.5px solid var(--border-light); }
+  .to-dav { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+  .to-dg { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+  @media (max-width: 680px) { .to-dg { grid-template-columns: 1fr; } }
+  .to-dsc { background: var(--bg-secondary); border: 0.5px solid var(--border-light); border-radius: var(--radius-lg); padding: 0.8rem 1rem; }
+  .to-dsc.fw { grid-column: 1/-1; }
+  .to-dsh { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
+  .to-dst { font-size: 12px; font-weight: 500; }
+  .to-add { background: none; border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); padding: 2px 8px; font-size: 11px; font-family: var(--font-sans); color: var(--text-secondary); cursor: pointer; }
+  .to-add:hover { background: var(--bg-primary); }
+  .to-row { display: flex; align-items: center; gap: 7px; padding: 4px 0; border-bottom: 0.5px solid var(--border-light); font-size: 12px; }
+  .to-row:last-child { border-bottom: none; }
+  .to-row.top { align-items: flex-start; }
+  .to-chk { width: 13px; height: 13px; border-radius: 3px; border: 1.5px solid var(--border-mid); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 8px; }
+  .to-chk.done { background: var(--accent-green); border-color: var(--accent-green); color: #fff; }
+  .to-pp { font-size: 10px; padding: 1px 5px; border-radius: var(--radius-md); font-weight: 500; flex-shrink: 0; }
+  .to-pp.high { background: #FCEBEB; color: #A32D2D; } .to-pp.med { background: #FAEEDA; color: #854F0B; } .to-pp.low { background: var(--bg-tertiary); color: var(--text-secondary); }
+  .to-del { background: none; border: none; cursor: pointer; color: var(--text-tertiary); font-size: 12px; padding: 0 2px; opacity: .35; }
+  .to-del:hover { opacity: 1; color: #A32D2D; }
+  .to-mg { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap: 6px; }
+  .to-msm { background: var(--bg-primary); border-radius: var(--radius-md); padding: 7px 9px; position: relative; cursor: pointer; }
+  .to-mdt { width: 7px; height: 7px; border-radius: 50%; position: absolute; top: 7px; right: 7px; }
+  .to-empty { font-size: 11px; color: var(--text-tertiary); padding: 6px 0; text-align: center; }
+  .to-sf { font-size: 11px; color: var(--accent-green); opacity: 0; transition: opacity .4s; margin-right: 4px; }
+  .to-sf.show { opacity: 1; }
+  /* Team modal */
+  .to-mo { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 300; align-items: center; justify-content: center; padding: 1rem; }
+  .to-mo.open { display: flex; }
+  .to-mb { background: var(--bg-primary); border: 0.5px solid var(--border-mid); border-radius: var(--radius-lg); padding: 1.5rem; width: 390px; max-width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,.18); max-height: 90vh; overflow-y: auto; }
+  .to-mti { font-size: 15px; font-weight: 500; margin-bottom: 1rem; }
+  .to-f { margin-bottom: 10px; }
+  .to-f label { display: block; font-size: 11px; font-weight: 500; color: var(--text-secondary); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .4px; }
+  .to-f input, .to-f select, .to-f textarea { width: 100%; padding: 7px 9px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); background: var(--bg-secondary); color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; outline: none; }
+  .to-f input:focus, .to-f select:focus, .to-f textarea:focus { border-color: var(--border-strong); }
+  .to-f textarea { height: 65px; resize: vertical; }
+  .to-ma { display: flex; justify-content: flex-end; gap: 7px; margin-top: 1rem; }
+  .to-bc { padding: 6px 14px; border-radius: var(--radius-md); border: 0.5px solid var(--border-mid); background: transparent; color: var(--text-secondary); font-family: var(--font-sans); font-size: 12px; cursor: pointer; }
+  .to-bs { padding: 6px 14px; border-radius: var(--radius-md); border: none; background: var(--accent-blue); color: #fff; font-family: var(--font-sans); font-size: 12px; font-weight: 500; cursor: pointer; }
 
 </style>
 <script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script></head>
@@ -171,7 +309,7 @@
         <span class="card-title">📅 Jun 8 – 16</span>
         <a class="card-action" href="https://outlook.office365.com/calendar" target="_blank">Open Outlook ↗</a>
       </div>
-      <div class="cal-grid" id="cal-events" style="grid-template-columns:repeat(9,1fr);"><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Mon</div><div class="cal-col-num">1</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Labs for Davenport</div><div class="cal-time">9:45am–10:15am</div></div><div class="cal-event ev-renee"><div class="cal-title">Sales L10</div><div class="cal-time">10am–11:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Pilot Discs Check In</div><div class="cal-time">11:30am–12:30pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Tue</div><div class="cal-col-num">2</div></div><div class="cal-col-events"><div class="cal-event ev-renee"><div class="cal-title">Good Morning Sunshine!</div><div class="cal-time">9:30am–10:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">LT Level 10</div><div class="cal-time">10:30am–12pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Projects Check In</div><div class="cal-time">1pm–1:30pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Working Genius Sales Session</div><div class="cal-time">2pm–3:30pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Bball Shootout – Suttons Bay</div><div class="cal-time">5:15pm–8:30pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Wed</div><div class="cal-col-num">3</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Marissa &amp; Jason Check In</div><div class="cal-time">9am–9:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Summer KickOff SOC</div><div class="cal-time">9am–4pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Thu</div><div class="cal-col-num">4</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Renee OOO</div><div class="cal-time">All day</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Buffer Day</div><div class="cal-time">All day</div></div><div class="cal-event ev-upcoming"><div class="cal-title">OOO</div><div class="cal-time">9am–9:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Bball Shootout – Glen Lake</div><div class="cal-time">5pm–9pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Fri</div><div class="cal-col-num">5</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Renee OOO</div><div class="cal-time">All day</div></div><div class="cal-event ev-upcoming"><div class="cal-title">OOO</div><div class="cal-time">9am–4pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Sat</div><div class="cal-col-num">6</div></div><div class="cal-col-events"><div class="cal-empty">—</div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Sun</div><div class="cal-col-num">7</div></div><div class="cal-col-events"><div class="cal-empty">—</div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Mon</div><div class="cal-col-num">8</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Plante Moran Gross Margin</div><div class="cal-time">9am–10am</div></div><div class="cal-event ev-renee"><div class="cal-title">Sales L10</div><div class="cal-time">10am–11:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Julie Jason Touch Base</div><div class="cal-time">12pm–1pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">JPG Resources Intro</div><div class="cal-time">1pm–2pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">East Lansing Opportunities</div><div class="cal-time">4pm–5pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Tue</div><div class="cal-col-num">9</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">OOO</div><div class="cal-time">All day</div></div><div class="cal-event ev-upcoming"><div class="cal-title">LT Level 10</div><div class="cal-time">10:30am–12pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Projects Check In</div><div class="cal-time">1pm–1:30pm</div></div><div class="cal-event ev-renee"><div class="cal-title">Hey Sunshine!</div><div class="cal-time">3pm–4pm</div></div></div></div></div>
+      <div class="cal-grid" id="cal-events" style="grid-template-columns:repeat(9,1fr);"><div class="cal-col is-today"><div class="cal-col-header"><div class="cal-col-dow">Mon</div><div class="cal-col-num">8</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Plante Moran Gross Margin</div><div class="cal-time">9am–10am</div></div><div class="cal-event ev-renee"><div class="cal-title">Sales L10</div><div class="cal-time">10am–11:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Julie Jason Touch Base</div><div class="cal-time">12pm–1pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">JPG Resources Intro</div><div class="cal-time">1pm–2pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">East Lansing Opportunities</div><div class="cal-time">4pm–5pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Tue</div><div class="cal-col-num">9</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">OOO</div><div class="cal-time">All day</div></div><div class="cal-event ev-upcoming"><div class="cal-title">LT Level 10</div><div class="cal-time">10:30am–12pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Projects Check In</div><div class="cal-time">1pm–1:30pm</div></div><div class="cal-event ev-renee"><div class="cal-title">Hey Sunshine!</div><div class="cal-time">3pm–4pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Wed</div><div class="cal-col-num">10</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">OOO</div><div class="cal-time">All day</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Dept Exec Packet Due</div><div class="cal-time">All day</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Renee Touch Base / Planner</div><div class="cal-time">9:30am–10:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Strategic Coach Workshop</div><div class="cal-time">9am–5pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Thu</div><div class="cal-col-num">11</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Buffer Day</div><div class="cal-time">All day</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Bergsma</div><div class="cal-time">8:45am–11:15am</div></div><div class="cal-event ev-renee"><div class="cal-title">Pilot Proven Process Same Page</div><div class="cal-time">1pm–2pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">World Cup Watch @ Jacobs Field?</div><div class="cal-time">3pm–5pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Fri</div><div class="cal-col-num">12</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">(Bball) Golf Outing - TBA</div><div class="cal-time">All day</div></div><div class="cal-event ev-renee"><div class="cal-title">Good Morning Sunshine!</div><div class="cal-time">9:30am–10am</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Sat</div><div class="cal-col-num">13</div></div><div class="cal-col-events"><div class="cal-empty">-</div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Sun</div><div class="cal-col-num">14</div></div><div class="cal-col-events"><div class="cal-empty">-</div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Mon</div><div class="cal-col-num">15</div></div><div class="cal-col-events"><div class="cal-event ev-renee"><div class="cal-title">Sales L10</div><div class="cal-time">10am–11:30am</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Tue</div><div class="cal-col-num">16</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">LT Level 10</div><div class="cal-time">10:30am–12pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">LT Photo Shoot - Take II</div><div class="cal-time">12pm–1pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Projects Check In</div><div class="cal-time">1pm–1:30pm</div></div><div class="cal-event ev-renee"><div class="cal-title">Hey Sunshine!</div><div class="cal-time">3pm–4pm</div></div></div></div></div>
     </div>
 
     <!-- Sales -->
@@ -180,7 +318,6 @@
         <span class="card-title">📊 Rolling 3-week sales report</span>
         <span class="card-action" style="cursor:default">May 17 – Jun 6, 2026</span>
       </div>
-      
       <div style="overflow-x:auto;">
         <table style="width:100%;font-size:13px;border-collapse:collapse;">
           <thead>
@@ -194,7 +331,7 @@
               <th style="text-align:right;padding:6px 8px;font-weight:500;color:var(--text-secondary);font-size:11px;">Email Collect.</th>
             </tr>
           </thead>
-          <tbody id="sales-table-body"><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Ann Arbor Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$129,839</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$128,772</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+0.8%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">943</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Charlevoix Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$56,235</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$57,323</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-1.9%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">404</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Frankenmuth Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$123,975</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$115,035</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+7.8%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">770</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Glen Arbor Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$196,449</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$167,358</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+17.4%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">1,614</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Holland Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$166,578</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$141,768</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+17.5%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">1,682</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Lansing Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$33,526</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$0</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">506</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Mackinaw City Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$67,602</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$50,662</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+33.4%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">531</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Traverse City Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$399,521</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$340,778</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+17.2%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">2,598</td></tr><tr style="background:var(--bg-secondary);border-top:0.5px solid var(--border-mid);border-bottom:0.5px solid var(--border-mid);font-weight:500;"><td style="padding:5px 8px;color:var(--text-primary)">All Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$1,173,726</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$1,001,695</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+17.2%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$0</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">9,048</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Web Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$135,795</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$127,003</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+6.9%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Mail Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$7,962</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$6,545</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+21.6%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Corporate Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$11,397</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$16,329</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-30.2%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Amazon Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$11,740</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$0</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="background:var(--bg-secondary);border-top:0.5px solid var(--border-mid);border-bottom:0.5px solid var(--border-mid);font-weight:500;"><td style="padding:5px 8px;color:var(--text-primary)">WB/MO/CP Total</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$166,894</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$149,878</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+11.4%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$0</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Wholesale Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$186,342</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$175,646</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+6.1%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Public House</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$107,268</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$94,112</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+14.0%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="background:var(--bg-secondary);border-top:0.5px solid var(--border-mid);border-bottom:0.5px solid var(--border-mid);font-weight:500;"><td style="padding:5px 8px;color:var(--text-primary)">Total</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$1,634,230</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$1,421,331</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+15.0%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$0</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr></tbody>
+          <tbody id="sales-table-body"><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Ann Arbor Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$129,206</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$132,141</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-2.2%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$140,548</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-8.1%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">962</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Charlevoix Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$71,027</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$68,481</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+3.7%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$73,159</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-2.9%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">448</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Frankenmuth Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$122,283</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$114,164</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+7.1%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$121,379</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+0.7%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">812</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Glen Arbor Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$236,539</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$200,084</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+18.2%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$211,206</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+12.0%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">1,855</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Holland Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$159,419</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$137,012</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+16.4%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$144,803</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+10.1%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">1,552</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Lansing Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$34,333</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$0</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$48,547</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-29.3%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">523</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Mackinaw City Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$84,215</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$77,310</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+8.9%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$88,119</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-4.4%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">610</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Traverse City Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$430,887</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$375,153</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+14.9%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$396,713</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+8.6%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">2,674</td></tr><tr style="background:var(--bg-secondary);border-top:0.5px solid var(--border-mid);border-bottom:0.5px solid var(--border-mid);font-weight:500;"><td style="padding:5px 8px;color:var(--text-primary)">All Retail</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$1,267,909</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$1,104,345</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+14.8%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$1,224,474</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+3.5%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">9,436</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Web Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$138,474</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$146,435</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-5.4%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$162,190</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-14.6%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Mail Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$5,321</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$7,845</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-32.2%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$6,171</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-13.8%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Corporate Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$11,811</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$16,564</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-28.7%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$20,625</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-42.7%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Amazon Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$13,806</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$0</td><td style="text-align:right;padding:5px 8px">—</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$17,097</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-19.2%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="background:var(--bg-secondary);border-top:0.5px solid var(--border-mid);border-bottom:0.5px solid var(--border-mid);font-weight:500;"><td style="padding:5px 8px;color:var(--text-primary)">WB/MO/CP Total</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$169,413</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$170,844</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-0.8%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$206,083</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-17.8%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Wholesale Order</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$131,065</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$143,540</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-8.7%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$155,324</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-15.6%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="border-bottom:0.5px solid var(--border-light);"><td style="padding:5px 8px;color:var(--text-primary)">Public House</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$130,537</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$126,003</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+3.6%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$142,094</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-8.1%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr><tr style="background:var(--bg-secondary);border-top:0.5px solid var(--border-mid);border-bottom:0.5px solid var(--border-mid);font-weight:500;"><td style="padding:5px 8px;color:var(--text-primary)">Total</td><td style="text-align:right;padding:5px 8px;color:var(--text-primary)">$1,687,113</td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$1,528,168</td><td style="text-align:right;padding:5px 8px"><span style="color:#1a6bbf">+10.4%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">$1,707,351</td><td style="text-align:right;padding:5px 8px"><span style="color:#8b1a1a">-1.2%</span></td><td style="text-align:right;padding:5px 8px;color:var(--text-secondary)">—</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -205,7 +342,6 @@
         <span class="card-title">💡 Check In / Issues / Opportunities</span>
         <button class="card-action" onclick="addIssue()">+ Add</button>
       </div>
-
       <div id="issues-list" style="display:flex;flex-direction:column;gap:8px;min-height:40px;"><div class="empty-state">No issues or opportunities yet.</div></div>
       <div style="display:flex;gap:7px;margin-top:10px;">
         <input id="issue-input" class="msg-input" placeholder="Describe an issue or opportunity..." onkeydown="if(event.key==='Enter') addIssue()" style="flex:1;">
@@ -216,9 +352,7 @@
           <option value="smiley">😊 Smiley Face</option>
         </select>
       </div>
-      </div>
     </div>
-
     <!-- Recharge Corner -->
     <div class="card" id="spark-card" style="padding:0;overflow:hidden;position:relative;">
       <!-- Header -->
@@ -226,74 +360,44 @@
         <span style="font-size:18px;">🔋</span>
         <span style="font-size:18px;font-weight:600;color:#fff;">Recharge</span>
       </div>
-      <div id="spark-img-wrap" style="width:100%;height:220px;overflow:hidden;position:relative;background:#0a1628;">
+      <div id="spark-img-wrap" style="width:100%;height:220px;overflow:hidden;position:relative;background:#0d1a2e;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220" style="width:100%;height:100%;display:block;">
-          <!-- Deep calm background -->
           <rect width="400" height="220" fill="#0a1628"/>
-
-          <!-- Subtle radial glow at center -->
           <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stop-color="#2a6496" stop-opacity="0.35"/>
             <stop offset="100%" stop-color="#0a1628" stop-opacity="0"/>
           </radialGradient>
           <rect width="400" height="220" fill="url(#coreGlow)"/>
-
-          <!-- Expanding breath rings — slow, calm, concentric -->
-          <!-- Ring 1 - outermost -->
           <circle cx="200" cy="110" r="90" fill="none" stroke="#1e4a72" stroke-width="0.5" opacity="0.3"/>
-          <!-- Ring 2 -->
           <circle cx="200" cy="110" r="72" fill="none" stroke="#2a6496" stroke-width="0.6" opacity="0.4"/>
-          <!-- Ring 3 -->
           <circle cx="200" cy="110" r="54" fill="none" stroke="#3a7ab5" stroke-width="0.8" opacity="0.55"/>
-          <!-- Ring 4 -->
           <circle cx="200" cy="110" r="38" fill="none" stroke="#4d96cc" stroke-width="1" opacity="0.65"/>
-          <!-- Ring 5 -->
           <circle cx="200" cy="110" r="24" fill="none" stroke="#6ab4e0" stroke-width="1.2" opacity="0.8"/>
-          <!-- Ring 6 - innermost -->
           <circle cx="200" cy="110" r="12" fill="none" stroke="#8fd4f5" stroke-width="1.5" opacity="0.9"/>
-
-          <!-- Center pause symbol — two vertical bars -->
           <rect x="193" y="101" width="5" height="18" rx="2" fill="#a8e4ff" opacity="0.9"/>
           <rect x="202" y="101" width="5" height="18" rx="2" fill="#a8e4ff" opacity="0.9"/>
-
-          <!-- Soft center glow -->
           <circle cx="200" cy="110" r="8" fill="#2a6496" opacity="0.4"/>
-
-          <!-- Top fade -->
-          <rect x="0" y="0" width="400" height="40" fill="url(#topFade)"/>
           <defs>
             <linearGradient id="topFade" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stop-color="#0a1628" stop-opacity="0.7"/>
               <stop offset="100%" stop-color="#0a1628" stop-opacity="0"/>
             </linearGradient>
-          </defs>
-
-          <!-- Bottom fade for text -->
-          <rect x="0" y="150" width="400" height="70" fill="url(#btmFade)"/>
-          <defs>
             <linearGradient id="btmFade" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stop-color="#0a1628" stop-opacity="0"/>
               <stop offset="100%" stop-color="#0a1628" stop-opacity="0.92"/>
             </linearGradient>
           </defs>
-
-          <!-- Subtle horizontal tick marks like a breath meter -->
-          <line x1="100" y1="110" x2="118" y2="110" stroke="#2a6496" stroke-width="0.5" opacity="0.4"/>
-          <line x1="282" y1="110" x2="300" y2="110" stroke="#2a6496" stroke-width="0.5" opacity="0.4"/>
-          <line x1="200" y1="10" x2="200" y2="28" stroke="#2a6496" stroke-width="0.5" opacity="0.4"/>
-          <line x1="200" y1="192" x2="200" y2="210" stroke="#2a6496" stroke-width="0.5" opacity="0.4"/>
-
-          <!-- Label -->
+          <rect x="0" y="0" width="400" height="40" fill="url(#topFade)"/>
+          <rect x="0" y="150" width="400" height="70" fill="url(#btmFade)"/>
           <text x="200" y="208" text-anchor="middle" font-family="Georgia,serif" font-size="10" fill="rgba(255,255,255,0.35)" letter-spacing="4">PAUSE · RESET · LEAD</text>
         </svg>
         <div style="position:absolute;bottom:0;left:0;right:0;padding:16px 18px;">
-          <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;">✦ This Week&#39;s Focus</div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;">✦ This Week's Focus</div>
           <div style="font-size:18px;font-weight:600;color:#fff;line-height:1.35;font-family:Georgia,serif;">Protect your transitions.</div>
         </div>
       </div>
       <div style="padding:14px 18px 16px;">
-        <p style="font-size:13px;color:var(--text-secondary);line-height:1.65;">Your week is stacked with context switches — financial deep dives, sales rhythm meetings, external partner intros, leadership sessions, and a full-day workshop in Chicago — all while you&#39;ve got OOO blocks that aren&#39;t really OOO. The risk isn&#39;t any single meeting, it&#39;s arriving at each one already half-depleted from the last.</p>
-        <p style="font-size:13px;color:var(--text-secondary);line-height:1.65;margin-top:10px;"><strong style="color:var(--text-primary);">This week&#39;s one thing:</strong> give yourself 5 minutes between each block. Step away from the screen, take a breath, let the last conversation actually end before the next one begins. On a week like this, those micro-resets are the difference between leading every room you walk into versus just surviving them. You&#39;ve got the Strategic Coach workshop Wednesday — show up to that one empty.</p>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.65;">Your week is stacked with context switches — financial deep dives, sales rhythm meetings, external partner intros, leadership sessions, and a full-day workshop in Chicago. The risk isn't any single meeting, it's arriving at each one already half-depleted from the last. Give yourself 5 minutes between each block. Those micro-resets are the difference between leading every room versus just surviving them. Show up to the Strategic Coach workshop Wednesday empty. <!-- orig: Focus isn't a personality trait — it's a practice. Pick one thing this week that deserves your complete, undivided attention and give it a real block of time: phone away, tab closed, door shut. You'll be amazed what one hour of genuine focus accomplishes compared to five hours of distracted effort. <em>The target is already in front of you. Lock in.</em></p>
       </div>
     </div>
 
@@ -339,30 +443,7 @@
 // ================================================================
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const calendarEvents = [
-  // Mon Jun 1 (Today)
-  {title:"Labs for Davenport",start:"2026-06-01T09:45",end:"2026-06-01T10:15"},
-  {title:"Sales L10",start:"2026-06-01T10:00",end:"2026-06-01T11:30",renee:true},
-  {title:"Pilot Discs Check In",start:"2026-06-01T11:30",end:"2026-06-01T12:30"},
-  // Tue Jun 2
-  {title:"Good Morning Sunshine!",start:"2026-06-02T09:30",end:"2026-06-02T10:30",renee:true},
-  {title:"LT Level 10",start:"2026-06-02T10:30",end:"2026-06-02T12:00"},
-  {title:"Projects Check In",start:"2026-06-02T13:00",end:"2026-06-02T13:30"},
-  {title:"Working Genius Sales Session",start:"2026-06-02T14:00",end:"2026-06-02T15:30"},
-  {title:"Bball Shootout – Suttons Bay",start:"2026-06-02T17:15",end:"2026-06-02T20:30"},
-  // Wed Jun 3
-  {title:"Marissa & Jason Check In",start:"2026-06-03T09:00",end:"2026-06-03T09:30"},
-  {title:"Summer KickOff SOC",start:"2026-06-03T09:00",end:"2026-06-03T16:00"},
-  // Thu Jun 4
-  {title:"Renee OOO",start:"2026-06-04",allDay:true},
-  {title:"Buffer Day",start:"2026-06-04",allDay:true},
-  {title:"OOO",start:"2026-06-04T09:00",end:"2026-06-04T09:30"},
-  {title:"Bball Shootout – Glen Lake",start:"2026-06-04T17:00",end:"2026-06-04T21:00"},
-  // Fri Jun 5
-  {title:"Renee OOO",start:"2026-06-05",allDay:true},
-  {title:"OOO",start:"2026-06-05T09:00",end:"2026-06-05T16:00"},
-  // Sat Jun 6 — empty
-  // Sun Jun 7 — empty
-  // Mon Jun 8
+  // Mon Jun 8 (Today)
   {title:"Plante Moran Gross Margin",start:"2026-06-08T09:00",end:"2026-06-08T10:00"},
   {title:"Sales L10",start:"2026-06-08T10:00",end:"2026-06-08T11:30",renee:true},
   {title:"Julie Jason Touch Base",start:"2026-06-08T12:00",end:"2026-06-08T13:00"},
@@ -373,14 +454,36 @@ const calendarEvents = [
   {title:"LT Level 10",start:"2026-06-09T10:30",end:"2026-06-09T12:00"},
   {title:"Projects Check In",start:"2026-06-09T13:00",end:"2026-06-09T13:30"},
   {title:"Hey Sunshine!",start:"2026-06-09T15:00",end:"2026-06-09T16:00",renee:true},
+  // Wed Jun 10
+  {title:"OOO",start:"2026-06-10",allDay:true},
+  {title:"Dept Exec Packet Due",start:"2026-06-10",allDay:true},
+  {title:"Renee Touch Base / Planner Check In",start:"2026-06-10T09:30",end:"2026-06-10T10:30"},
+  {title:"Strategic Coach Workshop",start:"2026-06-10T09:00",end:"2026-06-10T17:00"},
+  // Thu Jun 11
+  {title:"Buffer Day",start:"2026-06-11",allDay:true},
+  {title:"Bergsma",start:"2026-06-11T08:45",end:"2026-06-11T11:15"},
+  {title:"Pilot Proven Process Same Page",start:"2026-06-11T13:00",end:"2026-06-11T14:00",renee:true},
+  {title:"World Cup Watch @ Jacob's Field?",start:"2026-06-11T15:00",end:"2026-06-11T17:00"},
+  // Fri Jun 12
+  {title:"(Bball) Golf Outing – TBA",start:"2026-06-12",allDay:true},
+  {title:"Good Morning Sunshine!",start:"2026-06-12T09:30",end:"2026-06-12T10:00",renee:true},
+  // Sat Jun 13 — empty
+  // Sun Jun 14 — empty
+  // Mon Jun 15
+  {title:"Sales L10",start:"2026-06-15T10:00",end:"2026-06-15T11:30",renee:true},
+  // Tue Jun 16
+  {title:"LT Level 10",start:"2026-06-16T10:30",end:"2026-06-16T12:00"},
+  {title:"LT Photo Shoot – Take II",start:"2026-06-16T12:00",end:"2026-06-16T13:00"},
+  {title:"Projects Check In",start:"2026-06-16T13:00",end:"2026-06-16T13:30"},
+  {title:"Hey Sunshine!",start:"2026-06-16T15:00",end:"2026-06-16T16:00",renee:true},
 ];
 function fmt(d){let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'pm':'am';h=h%12||12;return m===0?h+ap:h+':'+String(m).padStart(2,'0')+ap;}
 function renderCalendar(){
-  const now=new Date('2026-06-01');
+  const now=new Date('2026-06-08');
   const el=document.getElementById('cal-events');
   el.style.gridTemplateColumns='repeat(9,1fr)';
   const cols=[];
-  for(let i=0;i<9;i++){const d=new Date('2026-06-01T00:00:00');d.setDate(d.getDate()+i);cols.push({date:d,events:[]});}
+  for(let i=0;i<9;i++){const d=new Date('2026-06-08T00:00:00');d.setDate(d.getDate()+i);cols.push({date:d,events:[]});}
   calendarEvents.forEach(ev=>{
     const evDate=ev.start.includes('T')?new Date(ev.start):new Date(ev.start+'T00:00:00');
     const col=cols.find(c=>c.date.toDateString()===evDate.toDateString());
