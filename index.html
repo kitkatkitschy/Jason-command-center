@@ -119,39 +119,6 @@
   .cal-time { font-size: 10px; color: var(--text-secondary); margin-top: 1px; }
   .cal-empty { font-size: 11px; color: var(--text-tertiary); font-style: italic; text-align: center; margin-top: 6px; }
 
-  /* Goals */
-  .goal-list { display: flex; flex-direction: column; gap: 9px; }
-  .goal-check {
-    width: 18px; height: 18px; border: 1.5px solid var(--border-mid);
-    border-radius: 4px; flex-shrink: 0; margin-top: 1px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--bg-primary); transition: all 0.15s;
-  }
-  .goal-check:hover { border-color: var(--accent-blue); }
-  .goal-check.done { background: var(--accent-blue); border-color: var(--accent-blue); }
-  .goal-check.done::after {
-    content: '';
-    display: block; width: 5px; height: 9px;
-    border: 2px solid white; border-top: none; border-left: none;
-    transform: rotate(45deg) translateY(-1px);
-  }
-  .goal-text { font-size: 14px; color: var(--text-primary); line-height: 1.5; flex: 1; }
-  .goal-text.done { color: var(--text-tertiary); text-decoration: line-through; }
-  .goal-del {
-    background: none; border: none; color: var(--text-tertiary);
-    cursor: pointer; font-size: 16px; line-height: 1; padding: 0 2px;
-    opacity: 0; transition: opacity 0.15s;
-  }
-  .goal-item:hover .goal-del { opacity: 1; }
-  .goal-del:hover { color: #A32D2D; }
-  .add-goal-row { display: flex; gap: 7px; margin-top: 10px; }
-  .add-goal-input {
-    flex: 1; padding: 7px 10px; font-size: 13px;
-    border: 0.5px solid var(--border-mid); border-radius: var(--radius-md);
-    background: var(--bg-primary); color: var(--text-primary);
-    font-family: var(--font-sans);
-  }
-  .add-goal-input:focus { outline: none; border-color: var(--border-strong); }
 
   /* Buttons / Inputs */
   .btn {
@@ -177,115 +144,10 @@
 
   .empty-state { font-size: 13px; color: var(--text-secondary); padding: 6px 0; }
 
-  /* PPP Wheel Card */
-  #ppp-card { overflow: hidden; }
-  #ppp-wheel-wrap { width: 100%; }
-  #ppp-wheel-wrap canvas { width: 100%; display: block; cursor: pointer; }
-  #ppp-detail-wrap {
-    display: none;
-    padding: 1.2rem;
-    background: var(--bg-secondary);
-    border-radius: var(--radius-md);
-    margin-top: 4px;
-  }
-  #ppp-back {
-    margin-bottom: 1rem; padding: 6px 14px; border: none; border-radius: 5px;
-    cursor: pointer; font-size: 13px; color: #fff; font-family: var(--font-sans);
-  }
-  #ppp-dtitle { font-size: 17px; font-weight: bold; margin-bottom: 1rem; padding-bottom: 8px; border-bottom: 1px solid var(--border-mid); }
-  .ppp-sub { margin-bottom: 1rem; }
-  .ppp-subname { font-size: 13px; font-weight: bold; color: var(--text-primary); margin-bottom: 4px; }
-  .ppp-subitems { padding-left: 16px; list-style: disc; }
-  .ppp-subitems li { font-size: 12px; color: var(--text-secondary); line-height: 1.75; }
-  .ppp-subitems-nested { padding-left: 14px; list-style: circle; margin-top: 2px; }
-  .ppp-noitem { font-size: 12px; color: var(--text-tertiary); font-style: italic; }
-  .ppp-notes-wrap { margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--border-mid); }
-  .ppp-notes-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-secondary); margin-bottom: 6px; }
-  .ppp-notes-wrap textarea {
-    width: 100%; height: 72px; padding: 8px 10px; font-size: 13px;
-    font-family: var(--font-sans); border: 0.5px solid var(--border-mid);
-    border-radius: var(--radius-md); background: var(--bg-primary);
-    color: var(--text-primary); resize: vertical;
-  }
-  .ppp-notes-wrap textarea:focus { outline: none; border-color: var(--border-strong); }
-  .ppp-completion-wrap { margin-top: 1rem; display: flex; align-items: center; gap: 10px; }
-  .ppp-completion-wrap label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); white-space: nowrap; }
-  .ppp-completion-wrap input[type=range] { flex: 1; }
-  .ppp-completion-wrap span { font-size: 12px; color: var(--text-secondary); min-width: 32px; }
-  .ppp-toolbar { display: flex; gap: 7px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
-  .ppp-toolbar button, .ppp-toolbar label {
-    padding: 5px 11px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-md);
-    cursor: pointer; font-size: 12px; font-family: var(--font-sans);
-    background: var(--bg-secondary); color: var(--text-secondary);
-  }
-  .ppp-toolbar button:hover, .ppp-toolbar label:hover { background: var(--bg-tertiary); }
-  .ppp-toolbar input[type=file] { display: none; }
-  #ppp-toast {
-    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-    background: #0d1f3c; color: #fff; padding: 8px 20px; border-radius: 20px;
-    font-size: 13px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 9999;
-  }
 
-  /* Team Overview */
-  #to-body { display: none; margin-top: 14px; }
-  .to-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 11px; }
-  .to-pc { background: var(--bg-secondary); border: 0.5px solid var(--border-light); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: border-color .15s; }
-  .to-pc:hover { border-color: var(--border-strong); }
-  .to-pch { display: flex; align-items: center; gap: 10px; padding: 0.8rem 1rem; border-bottom: 0.5px solid var(--border-light); }
-  .to-av { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
-  .to-pcb { padding: 0.8rem 1rem; display: flex; flex-direction: column; gap: 7px; }
-  .to-sec { font-size: 10px; }
-  .to-sec-lbl { font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--text-tertiary); margin-bottom: 3px; }
-  .to-pip { display: inline-block; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .to-chip { font-size: 10px; padding: 1px 6px; border-radius: var(--radius-md); background: var(--bg-primary); border: 0.5px solid var(--border-light); display: inline-flex; align-items: center; gap: 3px; }
-  .to-bdg { display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: var(--radius-md); font-weight: 500; }
-  .to-pos { background: #E6F1FB; color: #0C447C; } .to-neg { background: #FCEBEB; color: #A32D2D; } .to-neu { background: var(--bg-tertiary); color: var(--text-secondary); }
-  .to-pro { background: #E6F1FB; color: #0C447C; } .to-per { background: var(--bg-tertiary); color: var(--accent-blue); }
-  .to-dim { color: var(--text-tertiary); font-style: italic; }
-  /* detail */
-  .to-dv { display: none; }
-  .to-dv.on { display: block; }
-  .to-dh { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 0.5px solid var(--border-light); }
-  .to-dav { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
-  .to-dg { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
-  @media (max-width: 680px) { .to-dg { grid-template-columns: 1fr; } }
-  .to-dsc { background: var(--bg-secondary); border: 0.5px solid var(--border-light); border-radius: var(--radius-lg); padding: 0.8rem 1rem; }
-  .to-dsc.fw { grid-column: 1/-1; }
-  .to-dsh { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
-  .to-dst { font-size: 12px; font-weight: 500; }
-  .to-add { background: none; border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); padding: 2px 8px; font-size: 11px; font-family: var(--font-sans); color: var(--text-secondary); cursor: pointer; }
-  .to-add:hover { background: var(--bg-primary); }
-  .to-row { display: flex; align-items: center; gap: 7px; padding: 4px 0; border-bottom: 0.5px solid var(--border-light); font-size: 12px; }
-  .to-row:last-child { border-bottom: none; }
-  .to-row.top { align-items: flex-start; }
-  .to-chk { width: 13px; height: 13px; border-radius: 3px; border: 1.5px solid var(--border-mid); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 8px; }
-  .to-chk.done { background: var(--accent-green); border-color: var(--accent-green); color: #fff; }
-  .to-pp { font-size: 10px; padding: 1px 5px; border-radius: var(--radius-md); font-weight: 500; flex-shrink: 0; }
-  .to-pp.high { background: #FCEBEB; color: #A32D2D; } .to-pp.med { background: #FAEEDA; color: #854F0B; } .to-pp.low { background: var(--bg-tertiary); color: var(--text-secondary); }
-  .to-del { background: none; border: none; cursor: pointer; color: var(--text-tertiary); font-size: 12px; padding: 0 2px; opacity: .35; }
-  .to-del:hover { opacity: 1; color: #A32D2D; }
-  .to-mg { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap: 6px; }
-  .to-msm { background: var(--bg-primary); border-radius: var(--radius-md); padding: 7px 9px; position: relative; cursor: pointer; }
-  .to-mdt { width: 7px; height: 7px; border-radius: 50%; position: absolute; top: 7px; right: 7px; }
-  .to-empty { font-size: 11px; color: var(--text-tertiary); padding: 6px 0; text-align: center; }
-  .to-sf { font-size: 11px; color: var(--accent-green); opacity: 0; transition: opacity .4s; margin-right: 4px; }
-  .to-sf.show { opacity: 1; }
-  /* Team modal */
-  .to-mo { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 300; align-items: center; justify-content: center; padding: 1rem; }
-  .to-mo.open { display: flex; }
-  .to-mb { background: var(--bg-primary); border: 0.5px solid var(--border-mid); border-radius: var(--radius-lg); padding: 1.5rem; width: 390px; max-width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,.18); max-height: 90vh; overflow-y: auto; }
-  .to-mti { font-size: 15px; font-weight: 500; margin-bottom: 1rem; }
-  .to-f { margin-bottom: 10px; }
-  .to-f label { display: block; font-size: 11px; font-weight: 500; color: var(--text-secondary); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .4px; }
-  .to-f input, .to-f select, .to-f textarea { width: 100%; padding: 7px 9px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); background: var(--bg-secondary); color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; outline: none; }
-  .to-f input:focus, .to-f select:focus, .to-f textarea:focus { border-color: var(--border-strong); }
-  .to-f textarea { height: 65px; resize: vertical; }
-  .to-ma { display: flex; justify-content: flex-end; gap: 7px; margin-top: 1rem; }
-  .to-bc { padding: 6px 14px; border-radius: var(--radius-md); border: 0.5px solid var(--border-mid); background: transparent; color: var(--text-secondary); font-family: var(--font-sans); font-size: 12px; cursor: pointer; }
-  .to-bs { padding: 6px 14px; border-radius: var(--radius-md); border: none; background: var(--accent-blue); color: #fff; font-family: var(--font-sans); font-size: 12px; font-weight: 500; cursor: pointer; }
 
 </style>
-<script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script></head>
+<script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script><script src="chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/js/recordConsoleEvents.js"></script></head>
 <body>
 <div class="page">
 
@@ -297,7 +159,7 @@
         <div class="dash-subtitle">Cherry Republic</div>
       </div>
     </div>
-    <div class="dash-date" id="live-date">Tuesday, June 2, 2026<br><span style="color:var(--text-tertiary);font-size:11px">Cherry Republic</span></div>
+    <div class="dash-date" id="live-date">Monday, June 8, 2026<br><span style="color:var(--text-tertiary);font-size:11px">Cherry Republic</span></div>
     <button class="btn" onclick="downloadHTML()" style="font-size:12px;padding:5px 11px;">⬇ Download HTML</button>
   </div>
 
@@ -306,7 +168,7 @@
     <!-- Calendar -->
     <div class="card">
       <div class="card-header">
-        <span class="card-title">📅 Jun 1 – 9</span>
+        <span class="card-title">📅 Jun 8 – 16</span>
         <a class="card-action" href="https://outlook.office365.com/calendar" target="_blank">Open Outlook ↗</a>
       </div>
       <div class="cal-grid" id="cal-events" style="grid-template-columns:repeat(9,1fr);"><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Mon</div><div class="cal-col-num">1</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Labs for Davenport</div><div class="cal-time">9:45am–10:15am</div></div><div class="cal-event ev-renee"><div class="cal-title">Sales L10</div><div class="cal-time">10am–11:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Pilot Discs Check In</div><div class="cal-time">11:30am–12:30pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Tue</div><div class="cal-col-num">2</div></div><div class="cal-col-events"><div class="cal-event ev-renee"><div class="cal-title">Good Morning Sunshine!</div><div class="cal-time">9:30am–10:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">LT Level 10</div><div class="cal-time">10:30am–12pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Projects Check In</div><div class="cal-time">1pm–1:30pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Working Genius Sales Session</div><div class="cal-time">2pm–3:30pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Bball Shootout – Suttons Bay</div><div class="cal-time">5:15pm–8:30pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Wed</div><div class="cal-col-num">3</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Marissa &amp; Jason Check In</div><div class="cal-time">9am–9:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Summer KickOff SOC</div><div class="cal-time">9am–4pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Thu</div><div class="cal-col-num">4</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Renee OOO</div><div class="cal-time">All day</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Buffer Day</div><div class="cal-time">All day</div></div><div class="cal-event ev-upcoming"><div class="cal-title">OOO</div><div class="cal-time">9am–9:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Bball Shootout – Glen Lake</div><div class="cal-time">5pm–9pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Fri</div><div class="cal-col-num">5</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Renee OOO</div><div class="cal-time">All day</div></div><div class="cal-event ev-upcoming"><div class="cal-title">OOO</div><div class="cal-time">9am–4pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Sat</div><div class="cal-col-num">6</div></div><div class="cal-col-events"><div class="cal-empty">—</div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Sun</div><div class="cal-col-num">7</div></div><div class="cal-col-events"><div class="cal-empty">—</div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Mon</div><div class="cal-col-num">8</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">Plante Moran Gross Margin</div><div class="cal-time">9am–10am</div></div><div class="cal-event ev-renee"><div class="cal-title">Sales L10</div><div class="cal-time">10am–11:30am</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Julie Jason Touch Base</div><div class="cal-time">12pm–1pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">JPG Resources Intro</div><div class="cal-time">1pm–2pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">East Lansing Opportunities</div><div class="cal-time">4pm–5pm</div></div></div></div><div class="cal-col"><div class="cal-col-header"><div class="cal-col-dow">Tue</div><div class="cal-col-num">9</div></div><div class="cal-col-events"><div class="cal-event ev-upcoming"><div class="cal-title">OOO</div><div class="cal-time">All day</div></div><div class="cal-event ev-upcoming"><div class="cal-title">LT Level 10</div><div class="cal-time">10:30am–12pm</div></div><div class="cal-event ev-upcoming"><div class="cal-title">Projects Check In</div><div class="cal-time">1pm–1:30pm</div></div><div class="cal-event ev-renee"><div class="cal-title">Hey Sunshine!</div><div class="cal-time">3pm–4pm</div></div></div></div></div>
@@ -316,9 +178,9 @@
     <div class="card">
       <div class="card-header">
         <span class="card-title">📊 Rolling 3-week sales report</span>
-        <span class="card-action" style="cursor:default">May 10 – May 30, 2026</span>
+        <span class="card-action" style="cursor:default">May 17 – Jun 6, 2026</span>
       </div>
-      <div style="font-size:15px;color:var(--text-secondary);margin:-4px 0 10px 0;font-style:italic;">Sales OP has glitched, asking for the report to be run again</div>
+      
       <div style="overflow-x:auto;">
         <table style="width:100%;font-size:13px;border-collapse:collapse;">
           <thead>
@@ -343,9 +205,7 @@
         <span class="card-title">💡 Check In / Issues / Opportunities</span>
         <button class="card-action" onclick="addIssue()">+ Add</button>
       </div>
-      <div style="margin-bottom:10px;">
-        <a href="https://teams.microsoft.com/l/channel/19%3AuK7T7BzOn4Tm0-ROhsUkfBT8yYOHQ_sFCFlkMW4uFJw1%40thread.tacv2/Pilot%20Projects%20Rolling%20Check%20Ins?groupId=5f1e8fbf-34d8-40b8-83f4-9ef59e651433&amp;tenantId=82842379-d7b2-4129-bd05-76766f0d3aa7" target="_blank" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--text-secondary);letter-spacing:0.06em;text-transform:uppercase;">🔗 Pilot Proven Process Teams Channel</a>
-      </div>
+
       <div id="issues-list" style="display:flex;flex-direction:column;gap:8px;min-height:40px;"><div class="empty-state">No issues or opportunities yet.</div></div>
       <div style="display:flex;gap:7px;margin-top:10px;">
         <input id="issue-input" class="msg-input" placeholder="Describe an issue or opportunity..." onkeydown="if(event.key==='Enter') addIssue()" style="flex:1;">
@@ -356,105 +216,84 @@
           <option value="smiley">😊 Smiley Face</option>
         </select>
       </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- TEAM SNAPSHOT                                                 -->
-    <!-- ============================================================ -->
-    <div class="card" id="to-card">
-      <div class="card-header" style="margin-bottom:0.75rem;">
-        <span class="card-title">👥 Team Snapshot</span>
-        <span id="to-save-indicator" style="font-size:11px;color:var(--text-tertiary);transition:opacity 0.4s;">✓ Saved</span>
-      </div>
-      <textarea id="to-notes" placeholder="Notes…" style="width:100%;min-height:140px;font-size:13px;font-family:var(--font-sans);color:var(--text-primary);background:var(--bg-secondary);border:0.5px solid var(--border-mid);border-radius:var(--radius-md);padding:10px 12px;resize:vertical;outline:none;line-height:1.6;"></textarea>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- PILOT PROVEN PROCESS WHEEL                                    -->
-    <!-- ============================================================ -->
-    <!-- Rocks -->
-    <div class="card">
-      <div class="card-header">
-        <span class="card-title">🎯 Q2 Rocks</span>
-        <span class="card-action" style="cursor:default">Apr – Jun 2026</span>
-      </div>
-      <div class="goal-list" id="goal-list"><div class="goal-item" style="display:flex;flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;align-items:flex-start;gap:10px;"><div class="goal-check " onclick="toggleGoal(1)"></div><div class="goal-text ">Birmingham on target for Q3 opening</div><button class="goal-del" onclick="deleteGoal(1)">×</button></div><ul style="margin:5px 0 2px 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;"><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Construction has commenced</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Budget is prepared and agreed upon for buildout</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Store proven process guide is being utilized</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Roles and accountability adjustments are agreed upon</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Fulfillment group has understanding of projections by end of Q3 for sales for second half of the year</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Proven Process Applied</s></span></li></ul></div><div class="goal-item" style="display:flex;flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;align-items:flex-start;gap:10px;"><div class="goal-check " onclick="toggleGoal(2)"></div><div class="goal-text ">Sales shit on target to be ready for summer</div><button class="goal-del" onclick="deleteGoal(2)">×</button></div><ul style="margin:5px 0 2px 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;"><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Inventory practices are adjusted and SOPs complete</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>FMU refurnished</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>TC cafe updated</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Pub service and customer flow is complete</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Remerchandising by store is done</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>New product plan is communicated and in place for stores</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Training program updates have been implemented</s></span></li></ul></div><div class="goal-item" style="display:flex;flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;align-items:flex-start;gap:10px;"><div class="goal-check " onclick="toggleGoal(3)"></div><div class="goal-text "><s>Lansing performance review is in process</s></div><button class="goal-del" onclick="deleteGoal(3)">×</button></div><ul style="margin:5px 0 2px 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;"><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>4-5 metrics that help us determine whether the store is successful</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Next steps for measuring are established</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Timeline established for determination</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Routing for proposals established (staying closed, open, other location, etc.)</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Established end date to the process</s></span></li></ul></div><div class="goal-item" style="display:flex;flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;align-items:flex-start;gap:10px;"><div class="goal-check " onclick="toggleGoal(4)"></div><div class="goal-text ">Accountability adjustments for the team</div><button class="goal-del" onclick="deleteGoal(4)">×</button></div><ul style="margin:5px 0 2px 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;"><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Specific plan with times, dates, and roles defined and shared</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Dawn's role redefined</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Ellen's role redefined</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Northern stores management plan defined</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Management team for Birmingham is laid out</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>Sales data analyst deliverables are clear for summer season</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Renee's attitude is sunshine and fresh air all quarter</s></span></li></ul></div><div class="goal-item" style="display:flex;flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;align-items:flex-start;gap:10px;"><div class="goal-check " onclick="toggleGoal(5)"></div><div class="goal-text "><s>Remerchandising to improve profitability from summer sales</s></div><button class="goal-del" onclick="deleteGoal(5)">×</button></div><ul style="margin:5px 0 2px 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;"><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Product categories are remerchandised</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Activities done before Memorial Day</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Product changes are monitored and data is prepared to be collected over the course of the summer</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Projected data analysis supplied to DFC</s></span></li></ul></div><div class="goal-item" style="display:flex;flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;align-items:flex-start;gap:10px;"><div class="goal-check " onclick="toggleGoal(6)"></div><div class="goal-text ">2nd Pilot store momentum is rolling</div><button class="goal-del" onclick="deleteGoal(6)">×</button></div><ul style="margin:5px 0 2px 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;"><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>2-3 locations identified</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Grand Rapids market looked at</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Partridge Creek popup is analyzed</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>DC market has in-person visit</span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Lansing store evaluated</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Initial cities in Florida identified as potential spots</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Pilot kit is solidified and ready to be built</s></span></li><li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span><s>Proven Process Applied</s></span></li></ul></div></div>
-      <div class="add-goal-row">
-        <input class="add-goal-input" id="goal-input" placeholder="Add a rock..." onkeydown="if(event.key==='Enter') addGoal()">
-        <button class="btn" onclick="addGoal()">+ Add</button>
       </div>
     </div>
 
     <!-- Recharge Corner -->
     <div class="card" id="spark-card" style="padding:0;overflow:hidden;position:relative;">
       <!-- Header -->
-      <div style="background:#8b1a4a;padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:10px;">
+      <div style="background:#1a3a5c;padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:10px;">
         <span style="font-size:18px;">🔋</span>
         <span style="font-size:18px;font-weight:600;color:#fff;">Recharge</span>
       </div>
-      <div id="spark-img-wrap" style="width:100%;height:220px;overflow:hidden;position:relative;background:#0d1a2e;">
+      <div id="spark-img-wrap" style="width:100%;height:220px;overflow:hidden;position:relative;background:#0a1628;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220" style="width:100%;height:100%;display:block;">
-          <!-- Deep night sky background -->
-          <rect width="400" height="220" fill="#0d1a2e"></rect>
-          <!-- Subtle horizon glow -->
-          <ellipse cx="200" cy="220" rx="240" ry="60" fill="#1a3a5c" opacity="0.5"></ellipse>
-          <!-- Stars -->
-          <circle cx="40" cy="18" r="1" fill="#fff" opacity="0.7"></circle>
-          <circle cx="78" cy="35" r="0.8" fill="#fff" opacity="0.5"></circle>
-          <circle cx="130" cy="12" r="1.2" fill="#fff" opacity="0.8"></circle>
-          <circle cx="170" cy="28" r="0.7" fill="#fff" opacity="0.4"></circle>
-          <circle cx="220" cy="10" r="1" fill="#fff" opacity="0.6"></circle>
-          <circle cx="265" cy="22" r="0.9" fill="#fff" opacity="0.7"></circle>
-          <circle cx="310" cy="8" r="1.1" fill="#fff" opacity="0.5"></circle>
-          <circle cx="355" cy="30" r="0.8" fill="#fff" opacity="0.6"></circle>
-          <circle cx="58" cy="55" r="0.7" fill="#fff" opacity="0.4"></circle>
-          <circle cx="100" cy="42" r="1" fill="#fff" opacity="0.5"></circle>
-          <circle cx="340" cy="50" r="0.8" fill="#fff" opacity="0.4"></circle>
-          <circle cx="385" cy="15" r="1" fill="#fff" opacity="0.6"></circle>
-          <!-- Mountain silhouettes, distant -->
-          <polygon points="0,155 60,90 120,130 180,75 240,115 300,68 360,105 400,80 400,160 0,160" fill="#0f2238"></polygon>
-          <!-- Closer mountain layer -->
-          <polygon points="0,175 80,125 160,155 240,108 320,145 400,120 400,175 0,175" fill="#112840"></polygon>
-          <!-- Ground/water -->
-          <rect x="0" y="175" width="400" height="45" fill="#0a1e30"></rect>
-          <!-- Water shimmer lines -->
-          <line x1="60" y1="185" x2="120" y2="185" stroke="#1e4a6e" stroke-width="1" opacity="0.5"></line>
-          <line x1="150" y1="192" x2="240" y2="192" stroke="#1e4a6e" stroke-width="1" opacity="0.4"></line>
-          <line x1="280" y1="187" x2="350" y2="187" stroke="#1e4a6e" stroke-width="1" opacity="0.5"></line>
-          <!-- Single glowing target / focal point: concentric rings -->
-          <circle cx="200" cy="108" r="55" fill="none" stroke="#1e5a8a" stroke-width="0.5" opacity="0.4"></circle>
-          <circle cx="200" cy="108" r="40" fill="none" stroke="#2a7ab5" stroke-width="0.8" opacity="0.5"></circle>
-          <circle cx="200" cy="108" r="26" fill="none" stroke="#3d9bd4" stroke-width="1" opacity="0.7"></circle>
-          <circle cx="200" cy="108" r="14" fill="none" stroke="#5bbcf0" stroke-width="1.5" opacity="0.85"></circle>
-          <!-- Inner glow dot -->
-          <circle cx="200" cy="108" r="5" fill="#a8dff7" opacity="0.95"></circle>
-          <circle cx="200" cy="108" r="2.5" fill="#fff"></circle>
-          <!-- Crosshair lines -->
-          <line x1="200" y1="45" x2="200" y2="88" stroke="#5bbcf0" stroke-width="0.8" opacity="0.5"></line>
-          <line x1="200" y1="128" x2="200" y2="168" stroke="#5bbcf0" stroke-width="0.8" opacity="0.5"></line>
-          <line x1="138" y1="108" x2="180" y2="108" stroke="#5bbcf0" stroke-width="0.8" opacity="0.5"></line>
-          <line x1="220" y1="108" x2="262" y2="108" stroke="#5bbcf0" stroke-width="0.8" opacity="0.5"></line>
-          <!-- Aura glow around target -->
-          <circle cx="200" cy="108" r="40" fill="#1a6aaa" opacity="0.07"></circle>
-          <circle cx="200" cy="108" r="22" fill="#2a8acd" opacity="0.1"></circle>
-          <!-- Bottom gradient overlay for text -->
-          <rect x="0" y="140" width="400" height="80" fill="url(#focusFade)"></rect>
+          <!-- Deep calm background -->
+          <rect width="400" height="220" fill="#0a1628"/>
+
+          <!-- Subtle radial glow at center -->
+          <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#2a6496" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#0a1628" stop-opacity="0"/>
+          </radialGradient>
+          <rect width="400" height="220" fill="url(#coreGlow)"/>
+
+          <!-- Expanding breath rings — slow, calm, concentric -->
+          <!-- Ring 1 - outermost -->
+          <circle cx="200" cy="110" r="90" fill="none" stroke="#1e4a72" stroke-width="0.5" opacity="0.3"/>
+          <!-- Ring 2 -->
+          <circle cx="200" cy="110" r="72" fill="none" stroke="#2a6496" stroke-width="0.6" opacity="0.4"/>
+          <!-- Ring 3 -->
+          <circle cx="200" cy="110" r="54" fill="none" stroke="#3a7ab5" stroke-width="0.8" opacity="0.55"/>
+          <!-- Ring 4 -->
+          <circle cx="200" cy="110" r="38" fill="none" stroke="#4d96cc" stroke-width="1" opacity="0.65"/>
+          <!-- Ring 5 -->
+          <circle cx="200" cy="110" r="24" fill="none" stroke="#6ab4e0" stroke-width="1.2" opacity="0.8"/>
+          <!-- Ring 6 - innermost -->
+          <circle cx="200" cy="110" r="12" fill="none" stroke="#8fd4f5" stroke-width="1.5" opacity="0.9"/>
+
+          <!-- Center pause symbol — two vertical bars -->
+          <rect x="193" y="101" width="5" height="18" rx="2" fill="#a8e4ff" opacity="0.9"/>
+          <rect x="202" y="101" width="5" height="18" rx="2" fill="#a8e4ff" opacity="0.9"/>
+
+          <!-- Soft center glow -->
+          <circle cx="200" cy="110" r="8" fill="#2a6496" opacity="0.4"/>
+
+          <!-- Top fade -->
+          <rect x="0" y="0" width="400" height="40" fill="url(#topFade)"/>
           <defs>
-            <linearGradient id="focusFade" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#0d1a2e" stop-opacity="0"></stop>
-              <stop offset="100%" stop-color="#0d1a2e" stop-opacity="0.88"></stop>
+            <linearGradient id="topFade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0a1628" stop-opacity="0.7"/>
+              <stop offset="100%" stop-color="#0a1628" stop-opacity="0"/>
             </linearGradient>
           </defs>
+
+          <!-- Bottom fade for text -->
+          <rect x="0" y="150" width="400" height="70" fill="url(#btmFade)"/>
+          <defs>
+            <linearGradient id="btmFade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0a1628" stop-opacity="0"/>
+              <stop offset="100%" stop-color="#0a1628" stop-opacity="0.92"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Subtle horizontal tick marks like a breath meter -->
+          <line x1="100" y1="110" x2="118" y2="110" stroke="#2a6496" stroke-width="0.5" opacity="0.4"/>
+          <line x1="282" y1="110" x2="300" y2="110" stroke="#2a6496" stroke-width="0.5" opacity="0.4"/>
+          <line x1="200" y1="10" x2="200" y2="28" stroke="#2a6496" stroke-width="0.5" opacity="0.4"/>
+          <line x1="200" y1="192" x2="200" y2="210" stroke="#2a6496" stroke-width="0.5" opacity="0.4"/>
+
           <!-- Label -->
-          <text x="200" y="200" text-anchor="middle" font-family="Georgia,serif" font-size="11" fill="rgba(255,255,255,0.45)" letter-spacing="3">ONE THING AT A TIME</text>
+          <text x="200" y="208" text-anchor="middle" font-family="Georgia,serif" font-size="10" fill="rgba(255,255,255,0.35)" letter-spacing="4">PAUSE · RESET · LEAD</text>
         </svg>
         <div style="position:absolute;bottom:0;left:0;right:0;padding:16px 18px;">
-          <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;">✦ Recharge Focus</div>
-          <div style="font-size:18px;font-weight:600;color:#fff;line-height:1.35;font-family:Georgia,serif;">Lock in. One target. Full presence.</div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;">✦ This Week&#39;s Focus</div>
+          <div style="font-size:18px;font-weight:600;color:#fff;line-height:1.35;font-family:Georgia,serif;">Protect your transitions.</div>
         </div>
       </div>
       <div style="padding:14px 18px 16px;">
-        <p style="font-size:13px;color:var(--text-secondary);line-height:1.65;">Focus isn't a personality trait — it's a practice. Pick one thing this week that deserves your complete, undivided attention and give it a real block of time: phone away, tab closed, door shut. You'll be amazed what one hour of genuine focus accomplishes compared to five hours of distracted effort. <em>The target is already in front of you. Lock in.</em></p>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.65;">Your week is stacked with context switches — financial deep dives, sales rhythm meetings, external partner intros, leadership sessions, and a full-day workshop in Chicago — all while you&#39;ve got OOO blocks that aren&#39;t really OOO. The risk isn&#39;t any single meeting, it&#39;s arriving at each one already half-depleted from the last.</p>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.65;margin-top:10px;"><strong style="color:var(--text-primary);">This week&#39;s one thing:</strong> give yourself 5 minutes between each block. Step away from the screen, take a breath, let the last conversation actually end before the next one begins. On a week like this, those micro-resets are the difference between leading every room you walk into versus just surviving them. You&#39;ve got the Strategic Coach workshop Wednesday — show up to that one empty.</p>
       </div>
     </div>
 
@@ -563,22 +402,22 @@ function renderCalendar(){
 // SALES TABLE
 // ================================================================
 const salesData=[
-  {channel:'Ann Arbor Retail',sales:129839.46,salesLY:128771.69,salesOP:null,emails:943},
-  {channel:'Charlevoix Retail',sales:56235.37,salesLY:57322.70,salesOP:null,emails:404},
-  {channel:'Frankenmuth Retail',sales:123975.07,salesLY:115034.59,salesOP:null,emails:770},
-  {channel:'Glen Arbor Retail',sales:196448.51,salesLY:167357.66,salesOP:null,emails:1614},
-  {channel:'Holland Retail',sales:166578.17,salesLY:141768.13,salesOP:null,emails:1682},
-  {channel:'Lansing Retail',sales:33526.01,salesLY:0,salesOP:null,emails:506},
-  {channel:'Mackinaw City Retail',sales:67602.45,salesLY:50662.18,salesOP:null,emails:531},
-  {channel:'Traverse City Retail',sales:399521.06,salesLY:340777.96,salesOP:null,emails:2598},
+  {channel:'Ann Arbor Retail',sales:129205.60,salesLY:132140.89,salesOP:140548.14,emails:962},
+  {channel:'Charlevoix Retail',sales:71027.45,salesLY:68480.57,salesOP:73159.07,emails:448},
+  {channel:'Frankenmuth Retail',sales:122282.67,salesLY:114164.44,salesOP:121378.89,emails:812},
+  {channel:'Glen Arbor Retail',sales:236539.17,salesLY:200084.08,salesOP:211206.03,emails:1855},
+  {channel:'Holland Retail',sales:159419.10,salesLY:137012.33,salesOP:144803.21,emails:1552},
+  {channel:'Lansing Retail',sales:34332.79,salesLY:0,salesOP:48547.36,emails:523},
+  {channel:'Mackinaw City Retail',sales:84214.96,salesLY:77309.67,salesOP:88119.03,emails:610},
+  {channel:'Traverse City Retail',sales:430887.27,salesLY:375153.22,salesOP:396712.52,emails:2674},
   {channel:'All Retail',sales:null,salesLY:null,salesOP:null,emails:null,isSubtotal:true},
-  {channel:'Web Order',sales:135795.16,salesLY:127003.03,salesOP:null,emails:null},
-  {channel:'Mail Order',sales:7961.74,salesLY:6545.35,salesOP:null,emails:null},
-  {channel:'Corporate Order',sales:11396.80,salesLY:16329.39,salesOP:null,emails:null},
-  {channel:'Amazon Order',sales:11740.13,salesLY:0,salesOP:null,emails:null},
+  {channel:'Web Order',sales:138474.39,salesLY:146435.14,salesOP:162190.09,emails:null},
+  {channel:'Mail Order',sales:5321.03,salesLY:7844.97,salesOP:6171.06,emails:null},
+  {channel:'Corporate Order',sales:11811.15,salesLY:16564.05,salesOP:20625.13,emails:null},
+  {channel:'Amazon Order',sales:13806.45,salesLY:0,salesOP:17096.73,emails:null},
   {channel:'WB/MO/CP Total',sales:null,salesLY:null,salesOP:null,emails:null,isSubtotal:true},
-  {channel:'Wholesale Order',sales:186341.86,salesLY:175645.59,salesOP:null,emails:null},
-  {channel:'Public House',sales:107268.16,salesLY:94112.39,salesOP:null,emails:null},
+  {channel:'Wholesale Order',sales:131065.33,salesLY:143540.37,salesOP:155324.38,emails:null},
+  {channel:'Public House',sales:130536.93,salesLY:126002.59,salesOP:142094.16,emails:null},
   {channel:'Total',sales:null,salesLY:null,salesOP:null,emails:null,isTotal:true},
 ];
 function calcSubtotals(){
@@ -679,41 +518,6 @@ function addIssue(){
 }
 function deleteIssue(id){issues=issues.filter(i=>i.id!==id);saveIssues();renderIssues();}
 
-// ================================================================
-// ROCKS / GOALS
-// ================================================================
-const STORAGE_GOALS='cr-dashboard-goals-v4';
-const GOAL_DEFAULTS=[
-  {id:1,text:'Birmingham on target for Q3 opening',done:false,criteria:['Construction has commenced','Budget is prepared and agreed upon for buildout','<s>Store proven process guide is being utilized</s>','<s>Roles and accountability adjustments are agreed upon</s>','Fulfillment group has understanding of projections by end of Q3 for sales for second half of the year','<s>Proven Process Applied</s>']},
-  {id:2,text:'Sales shit on target to be ready for summer',done:false,criteria:['<s>Inventory practices are adjusted and SOPs complete</s>','FMU refurnished','<s>TC cafe updated</s>','Pub service and customer flow is complete','<s>Remerchandising by store is done</s>','<s>New product plan is communicated and in place for stores</s>','<s>Training program updates have been implemented</s>']},
-  {id:3,text:'<s>Lansing performance review is in process</s>',done:false,criteria:['<s>4-5 metrics that help us determine whether the store is successful</s>','<s>Next steps for measuring are established</s>','<s>Timeline established for determination</s>','<s>Routing for proposals established (staying closed, open, other location, etc.)</s>','<s>Established end date to the process</s>']},
-  {id:4,text:'Accountability adjustments for the team',done:false,criteria:['<s>Specific plan with times, dates, and roles defined and shared</s>',"<s>Dawn's role redefined</s>","<s>Ellen's role redefined</s>",'<s>Northern stores management plan defined</s>','Management team for Birmingham is laid out','Sales data analyst deliverables are clear for summer season',"<s>Renee's attitude is sunshine and fresh air all quarter</s>"]},
-  {id:5,text:'<s>Remerchandising to improve profitability from summer sales</s>',done:false,criteria:['<s>Product categories are remerchandised</s>','<s>Activities done before Memorial Day</s>','<s>Product changes are monitored and data is prepared to be collected over the course of the summer</s>','<s>Projected data analysis supplied to DFC</s>']},
-  {id:6,text:'2nd Pilot store momentum is rolling',done:false,criteria:['<s>2-3 locations identified</s>','<s>Grand Rapids market looked at</s>','<s>Partridge Creek popup is analyzed</s>','DC market has in-person visit','<s>Lansing store evaluated</s>','<s>Initial cities in Florida identified as potential spots</s>','<s>Pilot kit is solidified and ready to be built</s>','<s>Proven Process Applied</s>']},
-];
-let goals=[];
-try{
-  const stored=JSON.parse(localStorage.getItem(STORAGE_GOALS)||'[]');
-  goals=GOAL_DEFAULTS.map(def=>{const saved=stored.find(s=>s.id===def.id);return{...def,done:saved?saved.done:false};});
-  stored.filter(s=>s.id>6).forEach(s=>goals.push(s));
-}catch(e){goals=GOAL_DEFAULTS.map(d=>({...d}));}
-function saveGoals(){try{localStorage.setItem(STORAGE_GOALS,JSON.stringify(goals));}catch(e){}}
-saveGoals();
-function renderGoals(){
-  const el=document.getElementById('goal-list');
-  if(!goals.length){el.innerHTML='<div class="empty-state">No goals yet.</div>';return;}
-  el.innerHTML=goals.map(g=>{
-    const ch=(g.criteria||[]).length?`<ul style="margin:5px 0 2px 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;">${(g.criteria||[]).map(c=>`<li style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;"><span style="color:var(--accent-green);margin-top:2px;flex-shrink:0;">•</span><span>${c}</span></li>`).join('')}</ul>`:'';
-    return`<div class="goal-item" style="display:flex;flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;align-items:flex-start;gap:10px;"><div class="goal-check ${g.done?'done':''}" onclick="toggleGoal(${g.id})"></div><div class="goal-text ${g.done?'done':''}">${g.text}</div><button class="goal-del" onclick="deleteGoal(${g.id})">×</button></div>${ch}</div>`;
-  }).join('');
-}
-function toggleGoal(id){goals=goals.map(g=>g.id===id?{...g,done:!g.done}:g);saveGoals();renderGoals();}
-function deleteGoal(id){goals=goals.filter(g=>g.id!==id);saveGoals();renderGoals();}
-function addGoal(){
-  const inp=document.getElementById('goal-input');const text=inp.value.trim();if(!text)return;
-  goals.push({id:Date.now(),text,done:false,criteria:[]});saveGoals();inp.value='';renderGoals();
-}
-
 // Date
 document.getElementById('live-date').innerHTML=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})+'<br><span style="color:var(--text-tertiary);font-size:11px">Cherry Republic</span>';
 
@@ -730,31 +534,6 @@ function downloadHTML(){
 renderCalendar();
 renderSalesTable();
 renderIssues();
-renderGoals();
-// ================================================================
-// TEAM SNAPSHOT NOTES
-// ================================================================
-
-const TO_NOTES_KEY = 'jason-cmd-team-notes-v1';
-let toSaveTimer = null;
-
-function toNotesInit() {
-  const ta = document.getElementById('to-notes');
-  const saved = localStorage.getItem(TO_NOTES_KEY);
-  if (saved) ta.value = saved;
-  ta.addEventListener('input', () => {
-    clearTimeout(toSaveTimer);
-    document.getElementById('to-save-indicator').style.opacity = '0';
-    toSaveTimer = setTimeout(() => {
-      localStorage.setItem(TO_NOTES_KEY, ta.value);
-      const ind = document.getElementById('to-save-indicator');
-      ind.style.opacity = '1';
-      setTimeout(() => ind.style.opacity = '0', 2000);
-    }, 600);
-  });
-}
-
-toNotesInit();
 
 
 </script>
@@ -763,6 +542,7 @@ toNotesInit();
 <style>
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>
+
 
 
 </body></html>
